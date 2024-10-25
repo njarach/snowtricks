@@ -8,3 +8,9 @@
 /var/
 /vendor/
 ###< symfony/framework-bundle ###
+/.idea/.gitignore
+/.idea/modules.xml
+/.idea/php.xml
+/.idea/snowtricks.iml
+/.idea/symfony2.xml
+/.idea/vcs.xml

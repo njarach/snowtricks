@@ -35,9 +35,16 @@ class Trick
     #[ORM\OneToMany(targetEntity: Illustration::class, mappedBy: 'trick')]
     private Collection $illustrations;
 
+    /**
+     * @var Collection<int, Video>
+     */
+    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'trick')]
+    private Collection $videos;
+
     public function __construct()
     {
         $this->illustrations = new ArrayCollection();
+        $this->videos = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -117,6 +124,36 @@ class Trick
             // set the owning side to null (unless already changed)
             if ($illustration->getTrick() === $this) {
                 $illustration->setTrick(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Video>
+     */
+    public function getVideos(): Collection
+    {
+        return $this->videos;
+    }
+
+    public function addVideo(Video $video): static
+    {
+        if (!$this->videos->contains($video)) {
+            $this->videos->add($video);
+            $video->setTrick($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVideo(Video $video): static
+    {
+        if ($this->videos->removeElement($video)) {
+            // set the owning side to null (unless already changed)
+            if ($video->getTrick() === $this) {
+                $video->setTrick(null);
             }
         }
 

@@ -7,7 +7,8 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a href="{{ path('app_home') }}" class="nav-link active">Home</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">Tricks</a></li>
+                <li class="nav-item"><a href="{{ path('app_create_trick') }}" class="nav-link active">Créer</a></li>
+                <li class="nav-item"><a href="{{ path('app_trick_index') }}" class="nav-link">Tricks</a></li>
                 {% if app.user %}
                 <li class="nav-item"><a href="{{ path('app_logout') }}" class="nav-link">Sign out</a></li>
                 {% else %}

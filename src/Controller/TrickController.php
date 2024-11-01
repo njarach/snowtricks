@@ -19,7 +19,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/tricks-index', name: 'app_trick_index')]
-    public function index(Request $request): Response
+    public function index(): Response
     {
         $tricks = $this->trickService->getPaginatedTricks(1,15);
         return $this->render('trick/index.html.twig',[
@@ -37,15 +37,45 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid())
         {
-            $this->trickService->createTrick($trick);
-
-            $this->addFlash('success', 'Trick created successfully!');
-
+            $this->trickService->persistTrick($trick);
+            $this->addFlash('success', 'Le Trick a été créé avec succès !');
             return $this->redirectToRoute('app_trick_index');
         }
 
         return $this->render('trick/new.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    #[Route('/trick/edit/{id}', name: 'app_trick_edit')]
+    public function edit(Request $request, Trick $trick): Response
+    {
+        $form = $this->createForm(TrickType::class, $trick);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->trickService->persistTrick($trick);
+            $this->addFlash('success','Le Trick a été modifié avec succès.');
+            return $this->redirectToRoute('app_trick_index');
+        }
+
+        return $this->render('trick/edit.html.twig', [
+            'form' => $form->createView(),
+            'trick' => $trick,
+        ]);
+    }
+
+    #[Route('/trick/delete/{id}', name: 'app_trick_delete')]
+    public function delete(Request $request, Trick $trick): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {
+            $this->trickService->removeTrick($trick);
+
+            $this->addFlash('success', 'Le Trick a été supprimé.');
+        } else {
+            $this->addFlash('error', 'Token CRSF invalide.');
+        }
+
+        return $this->redirectToRoute('app_trick_index');
     }
 }

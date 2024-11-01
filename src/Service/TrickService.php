@@ -22,9 +22,17 @@ class TrickService
      * @param Trick $trick
      * @return void
      */
-    public function createTrick(Trick $trick):void
+    public function persistTrick(Trick $trick):void
     {
-        $this->trickManager->createTrick($trick);
+        $this->trickManager->persistTrick($trick);
     }
 
+    /**
+     * @param Trick $trick
+     * @return void
+     */
+    public function removeTrick(Trick $trick): void
+    {
+        $this->trickManager->removeTrick($trick);
+    }
 }

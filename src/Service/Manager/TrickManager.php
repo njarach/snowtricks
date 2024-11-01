@@ -25,9 +25,19 @@ class TrickManager
      * @param Trick $trick
      * @return void
      */
-    public function createTrick(Trick $trick): void
+    public function persistTrick(Trick $trick): void
     {
         $this->entityManager->persist($trick);
+        $this->entityManager->flush();
+    }
+
+    /**
+     * @param Trick $trick
+     * @return void
+     */
+    public function removeTrick(Trick $trick): void
+    {
+        $this->entityManager->remove($trick);
         $this->entityManager->flush();
     }
 }

@@ -23,7 +23,7 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        $tricks = $this->trickService->getPaginatedTricksHomepage();
+        $tricks = $this->trickService->getPaginatedTricks();
         return $this->render('home/index.html.twig', [
             'tricks'=>$tricks
         ]);
@@ -36,7 +36,7 @@ class HomeController extends AbstractController
     public function loadMoreTricks(Request $request): Response
     {
         $page = $request->query->getInt('page', 1);
-        $tricks = $this->trickService->getPaginatedTricksHomepage($page);
+        $tricks = $this->trickService->getPaginatedTricks($page);
 
         return $this->json([
             'tricks' => $this->renderView('trick/_tricks_list.html.twig', ['tricks' => $tricks]),

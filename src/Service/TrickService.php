@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Trick;
 use App\Service\Manager\TrickManager;
 
 class TrickService
@@ -12,9 +13,18 @@ class TrickService
         $this->trickManager = $trickManager;
     }
 
-    public function getPaginatedTricksHomepage(int $page = 1, int $limit = 5): array
+    public function getPaginatedTricks(int $page = 1, int $limit = 5): array
     {
         return $this->trickManager->findPaginated($page,$limit);
+    }
+
+    /**
+     * @param Trick $trick
+     * @return void
+     */
+    public function createTrick(Trick $trick):void
+    {
+        $this->trickManager->createTrick($trick);
     }
 
 }

@@ -15,12 +15,13 @@
     {% endblock %}
 </head>
 
-<body class="d-flex flex-column h-100 pt-5">
+<body class="d-flex flex-column h-100">
 {% include 'partials/_navbar.html.twig' %}
-<div id="main-container" class="container mt-5">
-    {% block body %}{% endblock %}
-</div>
-
+<main class="content-container mt-5 pt-5">
+    <div class="container">
+        {% block body %}{% endblock %}
+    </div>
+</main>
 {% include 'partials/_footer.html.twig' %}
 </body>
 </html>

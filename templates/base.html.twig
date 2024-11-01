@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" class="h-100" data-bs-theme="auto">
+<html lang="fr" data-bs-theme="auto">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,19 +14,11 @@
         {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% endblock %}
 </head>
-<body class="d-flex h-100 text-center text-bg-dark">
-<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-    {% include 'partials/_navbar.html.twig' %}
-    {% block body %}
-    <main class="px-3">
-        <h1>Cover your page.</h1>
-        <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
-        <p class="lead">
-            <a href="#" class="btn btn-lg btn-light fw-bold border-white bg-white">Learn more</a>
-        </p>
-    </main>
-    {% endblock %}
-    {% include 'partials/_footer.html.twig' %}
-</div>
+
+<body class="d-flex flex-column h-100">
+{% include 'partials/_navbar.html.twig' %}
+{% block body %}
+{% endblock %}
+{% include 'partials/_footer.html.twig' %}
 </body>
 </html>

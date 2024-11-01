@@ -6,3 +6,4 @@
  */
 import './styles/app.css';
 import './styles/cover.css';
+import './styles/posts.css';

@@ -17,10 +17,8 @@
 
 <body class="d-flex flex-column h-100">
 {% include 'partials/_navbar.html.twig' %}
-<main class="content-container mt-5 pt-5">
-    <div class="container">
+<main class="content-container flex-grow-1" style="padding-top: 56px">
         {% block body %}{% endblock %}
-    </div>
 </main>
 {% include 'partials/_footer.html.twig' %}
 </body>

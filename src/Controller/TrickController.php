@@ -8,11 +8,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class TrickController extends AbstractController
 {
-    #[Route('/trick', name: 'app_trick')]
-    public function index(): Response
-    {
-        return $this->render('trick/index.html.twig', [
-            'controller_name' => 'TrickController',
-        ]);
-    }
+//    #[Route('/trick', name: 'app_trick')]
+//    public function index(): Response
+//    {
+//        return $this->render('trick/index.html.twig', [
+//            'controller_name' => 'TrickController',
+//        ]);
+//    }
 }

@@ -12,9 +12,10 @@
     button.setAttribute('data-page', data.nextPage);
 
     // Hide button if no more tricks
-    if (!data.tricks) {
-    button.style.display = 'none';
-}
+    if (!data.tricks || data.tricks.length === 0) {
+        button.style.display = 'none';
+    }
+
 })
     .catch(error => console.error('Error loading more tricks:', error));
 });

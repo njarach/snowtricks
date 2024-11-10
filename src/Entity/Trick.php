@@ -189,6 +189,8 @@ class Trick
         return $this->name !== $this->originalName;
     }
 
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function generateSlug(SluggerInterface $slugger): void
     {
         if (empty($this->slug) || $this->nameChanged())

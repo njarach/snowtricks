@@ -7,17 +7,19 @@
                         <a href="{{ path('app_trick_show', { slug: trick.slug }) }}">
                             <h5 class="mb-0">{{ trick.name }}</h5>
                         </a>
-                        <div>
-                            <a href="{{ path('app_trick_edit', { id: trick.id }) }}" class="text-primary me-2" title="Modifier">
-                                <i class="bi bi-pencil"></i>
-                            </a>
-                            <form action="{{ path('app_trick_delete', { id: trick.id }) }}" method="post" class="d-inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
-                                <button type="submit" class="btn btn-link text-danger p-0" title="Supprimer" onclick="return confirm('Êtes vous sûr de vouloir supprimer ce Trick ?')">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </form>
-                        </div>
+                        {% if is_granted('ROLE_VERIFIED_USER') %}
+                            <div>
+                                <a href="{{ path('app_trick_edit', { id: trick.id }) }}" class="text-primary me-2" title="Modifier">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <form action="{{ path('app_trick_delete', { id: trick.id }) }}" method="post" class="d-inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                                    <button type="submit" class="btn btn-link text-danger p-0" title="Supprimer" onclick="return confirm('Êtes vous sûr de vouloir supprimer ce Trick ?')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="card-body">

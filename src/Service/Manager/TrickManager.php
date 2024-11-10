@@ -5,6 +5,7 @@ namespace App\Service\Manager;
 use App\Entity\Trick;
 use App\Repository\TrickRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
 
 class TrickManager
 {
@@ -16,9 +17,9 @@ class TrickManager
         $this->entityManager = $entityManager;
     }
 
-    public function getPaginatedTricks(int $page, int $limit): array
+    public function getAllTricks(): Query
     {
-        return $this->trickRepository->getPaginatedTricks($page,$limit);
+         return $this->trickRepository->getAllTricks();
     }
 
     /**

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Trick;
 use App\Service\Manager\TrickManager;
+use App\Service\Paginator\PaginatorService;
 
 class TrickService
 {
@@ -13,9 +14,11 @@ class TrickService
         $this->trickManager = $trickManager;
     }
 
-    public function getPaginatedTricks(int $page = 1, int $limit = 6): array
+    public function getPaginatedTricks(int $page = 1, int $limit = 5): array
     {
-        return $this->trickManager->getPaginatedTricks($page,$limit);
+        $query = $this->trickManager->getAllTricks();
+        $paginator = new PaginatorService();
+        return $paginator->paginate($query,$page,$limit);
     }
 
     /**

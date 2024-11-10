@@ -13,7 +13,7 @@
     <div class="posts-section container mt-5">
         {{ include('trick/_tricks_list.html.twig', { 'tricks': tricks }) }}
         <div class="d-flex justify-content-center">
-            <button id="show-more" class="btn btn-secondary mt-3" data-page="2">Tous les tricks</button>
+            <a type="button" id="show-more" class="btn btn-secondary mt-3" data-page="2" href="{{ path('app_trick_index') }}">Tous les tricks</a>
         </div>
     </div>
 {% endblock %}

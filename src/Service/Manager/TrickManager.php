@@ -16,9 +16,9 @@ class TrickManager
         $this->entityManager = $entityManager;
     }
 
-    public function findPaginated(int $page, int $limit): array
+    public function getPaginatedTricks(int $page, int $limit): array
     {
-        return $this->trickRepository->findPaginatedTricks($page,$limit);
+        return $this->trickRepository->getPaginatedTricks($page,$limit);
     }
 
     /**

@@ -16,7 +16,7 @@ class TrickRepository extends ServiceEntityRepository
         parent::__construct($registry, Trick::class);
     }
 
-    public function findPaginatedTricks(int $page, int $limit)
+    public function getPaginatedTricks(int $page, int $limit): array
     {
         $offset = ($page - 1) * $limit;
         $query = $this->createQueryBuilder('t')
@@ -28,8 +28,7 @@ class TrickRepository extends ServiceEntityRepository
     public function getLatestTricks(): array
     {
         $query = $this->createQueryBuilder('t')
-            ->setMaxResults(15)
-            ->orderBy('id desc');
+            ->setMaxResults(15);
         return $query->getQuery()->getResult();
     }
 }

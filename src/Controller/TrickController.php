@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Trick;
 use App\Form\TrickType;
 use App\Service\TrickService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,8 +30,9 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/{slug}', name: 'app_trick_show', requirements: ['slug' => '[a-z0-9\-]+'])]
-    public function show(Trick $trick): Response
+    public function show(EntityManagerInterface $entityManager, string $slug): Response
     {
+        $trick = $entityManager->getRepository(Trick::class)->findOneBy(['slug'=>$slug]);
         return $this->render('trick/show.html.twig',[
             'trick'=>$trick
         ]);

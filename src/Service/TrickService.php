@@ -15,7 +15,7 @@ class TrickService
 
     public function getPaginatedTricks(int $page = 1, int $limit = 6): array
     {
-        return $this->trickManager->findPaginated($page,$limit);
+        return $this->trickManager->getPaginatedTricks($page,$limit);
     }
 
     /**

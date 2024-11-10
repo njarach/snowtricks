@@ -6,7 +6,7 @@
     <div class="container mt-5">
         <div class="text-center">
             <h1>{{ trick.name }}</h1>
-            <p class="text-muted">Groupe: {{ trick.group }}</p>
+            <p class="text-muted">Groupe: {{ trick.trickGroup.name }}</p>
         </div>
 
         <div class="my-4">
@@ -15,7 +15,7 @@
 
         <div id="imageCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
             <div class="carousel-inner">
-                {% for image in trick.images %}
+                {% for image in trick.illustrations %}
                     <div class="carousel-item {% if loop.first %}active{% endif %}">
                         <img src="{{ image.url }}" class="d-block w-100" alt="{{ image.alt }}">
                     </div>
@@ -52,8 +52,8 @@
         </div>
 
         <div class="d-flex justify-content-between mb-4">
-            <a href="{{ path('trick_list') }}" class="btn btn-outline-secondary">Retour à la liste</a>
-            <a href="{{ path('trick_show', {'id': nextTrick.id}) }}" class="btn btn-primary">Trick Suivant</a>
+            <a href="{{ path('app_trick_index') }}" class="btn btn-outline-secondary">Retour à la liste</a>
+{#            <a href="{{ path('app_trick_show', {'id': nextTrick.id}) }}" class="btn btn-primary">Trick Suivant</a>#}
         </div>
 
         <div class="mb-5">
@@ -71,13 +71,13 @@
                 </ul>
             {% endif %}
 
-            <form method="post" action="{{ path('message_add', {'trick_id': trick.id}) }}">
+{#            <form method="post" action="{{ path('message_add', {'trick_id': trick.id}) }}">#}
                 <div class="mb-3">
                     <label for="messageContent" class="form-label">Ajouter un message</label>
                     <textarea class="form-control" id="messageContent" name="message_content" rows="3" required></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Envoyer</button>
-            </form>
+{#            </form>#}
         </div>
     </div>
 {% endblock %}

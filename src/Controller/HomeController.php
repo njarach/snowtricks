@@ -23,24 +23,9 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
-        $tricks = $this->trickService->getPaginatedTricks();
+        $tricks = $this->trickService->getLatestTricks();
         return $this->render('home/index.html.twig', [
             'tricks'=>$tricks
-        ]);
-    }
-
-    /**
-     *
-     */
-    #[Route('/load-more-tricks', name:'app_load_more_tricks', methods: 'GET')]
-    public function loadMoreTricks(Request $request): Response
-    {
-        $page = $request->query->getInt('page', 1);
-        $tricks = $this->trickService->getPaginatedTricks($page);
-
-        return $this->json([
-            'tricks' => $this->renderView('trick/_tricks_list.html.twig', ['tricks' => $tricks]),
-            'nextPage' => $page + 1,
         ]);
     }
 }

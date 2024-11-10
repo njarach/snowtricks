@@ -40,4 +40,9 @@ class TrickManager
         $this->entityManager->remove($trick);
         $this->entityManager->flush();
     }
+
+    public function getLatestTricks(): array
+    {
+        return $this->trickRepository->getLatestTricks();
+    }
 }

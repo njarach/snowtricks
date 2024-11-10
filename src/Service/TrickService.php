@@ -35,4 +35,9 @@ class TrickService
     {
         $this->trickManager->removeTrick($trick);
     }
+
+    public function getLatestTricks(): array
+    {
+        return $this->trickManager->getLatestTricks();
+    }
 }

@@ -24,4 +24,12 @@ class TrickRepository extends ServiceEntityRepository
             ->setMaxResults($limit);
         return $query->getQuery()->getResult();
     }
+
+    public function getLatestTricks(): array
+    {
+        $query = $this->createQueryBuilder('t')
+            ->setMaxResults(15)
+            ->orderBy('id desc');
+        return $query->getQuery()->getResult();
+    }
 }

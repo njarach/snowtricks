@@ -9,4 +9,3 @@ import 'bootstrap-icons/font/bootstrap-icons.min.css';
 import './styles/app.css';
 import './styles/cover.css';
 import './styles/posts.css';
-import './scripts/tricks.js';

@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class TrickController extends AbstractController
 {
@@ -36,6 +37,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/create-trick', name: 'app_create_trick')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function new(Request $request): Response
     {
         $trick = new Trick();
@@ -56,6 +58,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/edit/{id}', name: 'app_trick_edit')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function edit(Request $request, Trick $trick): Response
     {
         $form = $this->createForm(TrickType::class, $trick);
@@ -74,6 +77,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/delete/{id}', name: 'app_trick_delete')]
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function delete(Request $request, Trick $trick): Response
     {
         if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {

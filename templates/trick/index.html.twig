@@ -4,5 +4,25 @@
     <div id="tricks-list" class="posts-section container mt-5">
         {{ include('trick/_tricks_list.html.twig', { 'tricks': tricks }) }}
     </div>
-    // here add pagination buttons (bootstrap)
+    <nav aria-label="Trick pagination" class="mt-4">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+            <a class="page-link" href="{{ path('app_trick_index', { page: currentPage - 1 }) }}" aria-label="Précédent">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+
+        {% for i in 1..totalPages %}
+            <li class="page-item {% if i == currentPage %}active{% endif %}">
+                <a class="page-link" href="{{ path('app_trick_index', { page: i }) }}">{{ i }}</a>
+            </li>
+        {% endfor %}
+
+        <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+            <a class="page-link" href="{{ path('app_trick_index', { page: currentPage + 1 }) }}" aria-label="Suivant">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+    </nav>
 {% endblock %}

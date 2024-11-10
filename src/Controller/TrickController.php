@@ -21,12 +21,15 @@ class TrickController extends AbstractController
     }
 
     #[Route('/tricks-index', name: 'app_trick_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $tricks = $this->trickService->getPaginatedTricks(1,15);
+        $page = $request->query->getInt('page',1);
+        $paginationData = $this->trickService->getPaginatedTricks($page);
         return $this->render('trick/index.html.twig',[
-            'tricks'=>$tricks
-        ]);
+            'tricks' => $paginationData['items'],
+            'currentPage' => $paginationData['currentPage'],
+            'totalPages' => $paginationData['totalPages'],
+            ]);
     }
 
     #[Route('/trick/{slug}', name: 'app_trick_show', requirements: ['slug' => '[a-z0-9\-]+'])]

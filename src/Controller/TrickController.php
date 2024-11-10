@@ -27,7 +27,7 @@ class TrickController extends AbstractController
         ]);
     }
 
-    #[Route('/trick/{id}', name: 'app_trick_show')]
+    #[Route('/trick/{slug}', name: 'app_trick_show', requirements: ['slug' => '[a-z0-9\-]+'])]
     public function show(Trick $trick): Response
     {
         return $this->render('trick/show.html.twig',[

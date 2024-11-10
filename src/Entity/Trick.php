@@ -7,16 +7,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 class Trick
 {
+    private string $originalName;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50, unique: true)]
+    #[ORM\Column(length: 100, unique: true)]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'tricks')]
@@ -40,6 +43,9 @@ class Trick
      */
     #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'trick')]
     private Collection $videos;
+
+    #[ORM\Column(length: 200, unique: true)]
+    private ?string $slug = null;
 
     public function __construct()
     {
@@ -158,5 +164,36 @@ class Trick
         }
 
         return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+    #[ORM\PostLoad]
+    public function storeOriginalName(): void
+    {
+        $this->originalName = $this->name;
+    }
+
+    public function nameChanged(): bool
+    {
+        return $this->name !== $this->originalName;
+    }
+
+    public function generateSlug(SluggerInterface $slugger): void
+    {
+        if (empty($this->slug) || $this->nameChanged())
+        {
+            $this->slug = $slugger->slug($this->name)->lower();
+        }
     }
 }

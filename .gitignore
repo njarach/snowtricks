@@ -55,3 +55,8 @@
 /.idea/snowtricks.iml
 /.idea/symfony2.xml
 /.idea/vcs.xml
+
+###> symfony/asset-mapper ###
+/public/assets/
+/assets/vendor/
+###< symfony/asset-mapper ###

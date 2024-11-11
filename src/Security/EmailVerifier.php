@@ -37,14 +37,12 @@ class EmailVerifier
         $this->mailer->send($email);
     }
 
-    /**
-     * @throws VerifyEmailExceptionInterface
-     */
     public function handleEmailConfirmation(Request $request, User $user): void
     {
         $this->verifyEmailHelper->validateEmailConfirmationFromRequest($request, (string) $user->getId(), (string) $user->getEmail());
 
         $user->setVerified(true);
+        $user->setRoles(['ROLE_VERIFIED_USER']);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();

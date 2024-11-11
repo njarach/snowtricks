@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Group;
 use App\Entity\Trick;
+use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,9 +17,14 @@ class TrickType extends AbstractType
         $builder
             ->add('name')
             ->add('description')
+            ->add('slug')
             ->add('trick_group', EntityType::class, [
                 'class' => Group::class,
-                'choice_label' => 'name',
+                'choice_label' => 'id',
+            ])
+            ->add('author', EntityType::class, [
+                'class' => User::class,
+                'choice_label' => 'id',
             ])
         ;
     }

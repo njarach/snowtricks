@@ -42,7 +42,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/create-trick', name: 'app_create_trick')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('ROLE_VERIFIED_USER')]
     public function new(Request $request): Response
     {
         $trick = new Trick();
@@ -63,7 +63,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/edit/{id}', name: 'app_trick_edit')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('ROLE_VERIFIED_USER')]
     public function edit(Request $request, Trick $trick): Response
     {
         $form = $this->createForm(TrickType::class, $trick);
@@ -82,7 +82,7 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/delete/{id}', name: 'app_trick_delete')]
-    #[IsGranted('IS_AUTHENTICATED_FULLY')]
+    #[IsGranted('ROLE_VERIFIED_USER')]
     public function delete(Request $request, Trick $trick): Response
     {
         if ($this->isCsrfTokenValid('delete'.$trick->getId(), $request->request->get('_token'))) {

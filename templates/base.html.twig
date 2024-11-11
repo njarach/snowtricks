@@ -17,8 +17,7 @@
 <body class="d-flex flex-column h-100">
 {% include 'partials/_navbar.html.twig' %}
 <main class="content-container flex-grow-1" style="padding-top: 56px">
-    {% if app.flashes %}
-        <div class="container mt-2">
+        <div class="container">
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div role="alert" class="alert alert-{{ label }}">
@@ -26,7 +25,6 @@
                 </div>
             {% endfor %}
         {% endfor %} </div>
-    {% endif %}
         {% block body %}{% endblock %}
 </main>
 {% include 'partials/_footer.html.twig' %}

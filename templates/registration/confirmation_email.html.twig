@@ -1,11 +1,81 @@
-<h1>Hi! Please confirm your email!</h1>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmez votre adresse e-mail</title>
+    <style>
+        /* Basic email styling */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .email-container {
+            background-color: #ffffff;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 15px;
+        }
+        h1 {
+            color: #edc00c;
+            font-size: 24px;
+        }
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #666;
+        }
+        .btn-confirm {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 12px 24px;
+            background-color: #edc00c;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+<div class="email-container">
+    <div class="header">
+        <h1>Bienvenue sur Snowtricks !</h1>
+        <p>Confirmez votre adresse e-mail pour rejoindre la communauté</p>
+    </div>
 
-<p>
-    Please confirm your email address by clicking the following link: <br><br>
-    <a href="{{ signedUrl|raw }}">Confirm my Email</a>.
-    This link will expire in {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
-</p>
+    <p>
+        Pour partager, modifier et commenter des Tricks sur Snowtricks, veuillez confirmer votre adresse e-mail en cliquant sur le lien ci-dessous.
+    </p>
 
-<p>
-    Cheers!
-</p>
+    <p style="text-align: center;">
+        <a href="{{ signedUrl|raw }}" class="btn-confirm">Confirmer mon adresse e-mail</a>
+    </p>
+
+    <p style="text-align: center; font-size: 14px; color: #666;">
+        Ce lien expirera dans {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
+    </p>
+
+    <div class="footer">
+        <p>À très bientôt sur <strong>Snowtricks</strong> !</p>
+    </div>
+</div>
+</body>
+</html>

@@ -91,6 +91,13 @@ class TrickController extends AbstractController
     public function delete(Request $request, Trick $trick): Response
     {
         if ($this->isCsrfTokenValid('delete' . $trick->getId(), $request->request->get('_token'))) {
+            $illustrations = $trick->getIllustrations();
+            foreach ($illustrations as $illustration)
+            {
+                $filename = $illustration->getFileName();
+                $uploadsDir = $this->getParameter('uploads_directory');
+                unlink($uploadsDir . '/' . $filename);
+            }
             $this->trickService->removeTrick($trick);
 
             $this->addFlash('success', 'Le Trick a été supprimé avec succès.');

@@ -17,7 +17,7 @@ class Illustration
     private ?string $title = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $filePath = null;
+    private ?string $fileName = null;
 
     #[ORM\ManyToOne(inversedBy: 'illustrations')]
     private ?Trick $trick = null;
@@ -39,14 +39,14 @@ class Illustration
         return $this;
     }
 
-    public function getFilePath(): ?string
+    public function getFileName(): ?string
     {
-        return $this->filePath;
+        return $this->fileName;
     }
 
-    public function setFilePath(string $filePath): static
+    public function setFileName(string $fileName): static
     {
-        $this->filePath = $filePath;
+        $this->fileName = $fileName;
 
         return $this;
     }

@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\DTO\TrickDTO;
 use App\Entity\Illustration;
 use App\Entity\Trick;
 use App\Entity\Video;
 use App\Form\TrickType;
 use App\Service\TrickService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -47,17 +49,20 @@ class TrickController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Route('/create-trick', name: 'app_create_trick')]
     #[IsGranted('ROLE_VERIFIED_USER')]
-    public function new(Request $request, SluggerInterface $slugger): Response
+    public function new(Request $request): Response
     {
-        $trick = new Trick();
-        $form = $this->createForm(TrickType::class, $trick);
+        $trickDTO = new TrickDTO();
+        $form = $this->createForm(TrickType::class, $trickDTO);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->trickService->handleTrickTypeData($form, $trick, $slugger);
+            $this->trickService->createTrick($trickDTO);
             $this->addFlash('success', 'Le Trick a été créé avec succès.');
             return $this->redirectToRoute('app_trick_index');
         }
@@ -67,15 +72,19 @@ class TrickController extends AbstractController
         ]);
     }
 
+    /**
+     * @throws Exception
+     */
     #[Route('/trick/edit/{id}', name: 'app_trick_edit')]
     #[IsGranted('ROLE_VERIFIED_USER')]
-    public function edit(Request $request, SluggerInterface $slugger, Trick $trick): Response
+    public function edit(Request $request, Trick $trick): Response
     {
-        $form = $this->createForm(TrickType::class, $trick);
+        $trickDTO = $this->trickService->createTrickDTO($trick);
+        $form = $this->createForm(TrickType::class, $trickDTO);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->trickService->handleTrickTypeData($form, $trick, $slugger);
+            $this->trickService->editTrick($trickDTO);
             $this->addFlash('success', 'Le Trick a été modifié avec succès.');
             return $this->redirectToRoute('app_trick_index');
         }

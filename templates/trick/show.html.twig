@@ -16,23 +16,26 @@
 
             <div id="imageCarousel" class="carousel slide mb-4">
                 <div class="carousel-indicators">
-                    <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                    <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-                    <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                    {% for i in 0..(trick.illustrations|length + trick.videos|length - 1) %}
+                        <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ i }}"
+                                class="{% if i == 0 %}active{% endif %}"
+                                aria-current="{% if i == 0 %}true{% endif %}"
+                                aria-label="Slide {{ i + 1 }}"></button>
+                    {% endfor %}
                 </div>
 
                 <div class="carousel-inner">
                     {% for image in trick.illustrations %}
                         <div class="carousel-item{% if loop.first %} active{% endif %}">
-                            <img src="{{ asset('/uploads/'~image.filename) }}" class="d-block w-100 h-100" alt="{{ image.title }}">
+                            <img src="{{ asset('/uploads/'~image.filename) }}" class="d-block mx-auto carousel-media" alt="{{ image.title }}">
                         </div>
                     {% endfor %}
                     {% for video in trick.videos %}
                         <div class="carousel-item {% if trick.illustrations|length == 0 and loop.first %}active{% endif %}">
                             <iframe
                                     src="{{ video.embedLink }}"
-                                    frameborder="0"
-                                    allowfullscreen>
+                                    allowfullscreen
+                                    class="d-block mx-auto carousel-media">
                             </iframe>
                         </div>
                     {% endfor %}

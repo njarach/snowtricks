@@ -2,37 +2,42 @@
 
 namespace App\Service;
 
+use App\DTO\TrickDTO;
 use App\Entity\Illustration;
 use App\Entity\Trick;
-use App\Entity\Video;
 use App\Service\Manager\TrickManager;
 use App\Service\Paginator\PaginatorService;
+use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickService
 {
     private TrickManager $trickManager;
     private ParameterBagInterface $parameterBag;
-    public function __construct(TrickManager $trickManager, ParameterBagInterface $parameterBag)
+    private SluggerInterface $slugger;
+
+    public function __construct(TrickManager $trickManager, ParameterBagInterface $parameterBag, SluggerInterface $slugger)
     {
         $this->trickManager = $trickManager;
         $this->parameterBag = $parameterBag;
+        $this->slugger = $slugger;
     }
 
     public function getPaginatedTricks(int $page = 1, int $limit = 5): array
     {
         $query = $this->trickManager->getAllTricks();
         $paginator = new PaginatorService();
-        return $paginator->paginate($query,$page,$limit);
+        return $paginator->paginate($query, $page, $limit);
     }
 
     /**
      * @param Trick $trick
      * @return void
      */
-    public function persistAndFlushTrick(Trick $trick):void
+    public function persistAndFlushTrick(Trick $trick): void
     {
         $this->trickManager->persistAndFlushTrick($trick);
     }
@@ -52,41 +57,71 @@ class TrickService
     }
 
     /**
-     * @param FormInterface $form
-     * @param Trick $trick
-     * @param SluggerInterface $slugger
+     * @param TrickDTO $trickDTO
      * @return void
+     * @throws Exception
      */
-    public function handleTrickTypeData(FormInterface $form, Trick $trick, SluggerInterface $slugger): void
+    public function createTrick(TrickDTO $trickDTO): void
     {
-        $illustrations = $form->get('illustrations')->getData();
+        $trick = new Trick();
+        $trick->setName($trickDTO->name);
+        $trick->setDescription($trickDTO->description);
+        $trick->setTrickGroup($trickDTO->trickGroup);
+        $trick->generateSlug($this->slugger);
 
-        foreach ($illustrations as $image) {
-            // TODO : move this to an upload service
-            $file = md5(uniqid()) . '.' . $image->guessExtension();
-            $image->move(
-                $this->parameterBag->get('uploads_directory'),
-                $file
-            );
+        foreach ($trickDTO->illustrations as $illustrationDTO) {
+            $illustration = new Illustration();
+            $illustration->setTitle($illustrationDTO->title);
 
-            $newIllustration = new Illustration();
-            $newIllustration->setFileName($file);
-            $newIllustration->setTitle("Image");
-            $trick->addIllustration($newIllustration);
+            // Handle file upload
+            $uploadedFile = $illustrationDTO->uploadedFile;
+            if ($uploadedFile) {
+                $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+                try {
+                    $uploadedFile->move(
+                        $this->parameterBag->get('uploads_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('File upload failed: ' . $e->getMessage());
+                }
+                $illustration->setFileName($newFilename);
+            }
+
+            $trick->addIllustration($illustration);
         }
 
-        $videosData = $form->get('videos')->getData();
-        $videos = explode(',', $videosData);
-        foreach ($videos as $video) {
-            $newVideo = new Video();
-            $newVideo->setEmbedLink($video);
-            $newVideo->setTitle('Video');
-            $newVideo->setTrick($trick);
-            $trick->addVideo($newVideo);
-            //TODO url format verification if not correctly done by type ?
-        }
+        $this->trickManager->persistAndFlushTrick($trick);
 
-        $trick->generateSlug($slugger);
-        $this->persistAndFlushTrick($trick);
+//        $videosData = $form->get('videos')->getData();
+//
+//        $videos = explode(',', $videosData);
+//
+//        foreach ($videos as $video) {
+//            $newVideo = new Video();
+//            $newVideo->setEmbedLink($video);
+//            $newVideo->setTitle('Video');
+//            $newVideo->setTrick($trick);
+//            $trick->addVideo($newVideo);
+//        }
+//
+//        $trick->generateSlug($slugger);
+//        $this->persistAndFlushTrick($trick);
+    }
+
+    public function createTrickDTO(Trick $trick): TrickDTO
+    {
+        $trickDTO = new TrickDTO();
+        $trickDTO->name = $trick->getName();
+        $trickDTO->description = $trick->getDescription();
+        $trickDTO->trickGroup = $trick->getTrickGroup();
+//        $trickDTO->illustrations = $trick->getIllustrations()->toArray();
+//        $trickDTO->videos = $trick->getVideos()->toArray();
+        return $trickDTO;
+    }
+
+    public function editTrick(TrickDTO $trickDTO)
+    {
+
     }
 }

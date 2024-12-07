@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\DTO\TrickDTO;
 use App\Entity\Illustration;
 use App\Entity\Trick;
 use App\Entity\Video;
@@ -11,7 +10,6 @@ use App\Service\TrickService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -54,15 +52,14 @@ class TrickController extends AbstractController
      */
     #[Route('/create-trick', name: 'app_create_trick')]
     #[IsGranted('ROLE_VERIFIED_USER')]
-    public function new(Request $request): Response
+    public function new(Request $request, SluggerInterface $slugger): Response
     {
-        $trickDTO = new TrickDTO();
-        $form = $this->createForm(TrickType::class, $trickDTO);
-
+        $trick = new Trick();
+        $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->trickService->createTrick($trickDTO);
+            $this->trickService->createTrick($trick, $slugger);
             $this->addFlash('success', 'Le Trick a été créé avec succès.');
             return $this->redirectToRoute('app_trick_index');
         }
@@ -79,12 +76,11 @@ class TrickController extends AbstractController
     #[IsGranted('ROLE_VERIFIED_USER')]
     public function edit(Request $request, Trick $trick): Response
     {
-        $trickDTO = $this->trickService->createTrickDTO($trick);
-        $form = $this->createForm(TrickType::class, $trickDTO);
+        $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->trickService->editTrick($trickDTO);
+            $this->trickService->editTrick($trick);
             $this->addFlash('success', 'Le Trick a été modifié avec succès.');
             return $this->redirectToRoute('app_trick_index');
         }
@@ -129,12 +125,10 @@ class TrickController extends AbstractController
             return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
         }
 
-        // Delete the image file
         $filename = $illustration->getFileName();
         $uploadsDir = $this->getParameter('uploads_directory');
         unlink($uploadsDir . '/' . $filename);
 
-        // Remove the illustration entity
         $entityManager->remove($illustration);
         $entityManager->flush();
 

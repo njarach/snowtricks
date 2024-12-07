@@ -57,24 +57,16 @@ class TrickService
     }
 
     /**
-     * @param TrickDTO $trickDTO
+     * @param Trick $trick
+     * @param SluggerInterface $slugger
      * @return void
      * @throws Exception
      */
-    public function createTrick(TrickDTO $trickDTO): void
+    public function createTrick(Trick $trick, SluggerInterface $slugger): void
     {
-        $trick = new Trick();
-        $trick->setName($trickDTO->name);
-        $trick->setDescription($trickDTO->description);
-        $trick->setTrickGroup($trickDTO->trickGroup);
-        $trick->generateSlug($this->slugger);
 
-        foreach ($trickDTO->illustrations as $illustrationDTO) {
-            $illustration = new Illustration();
-            $illustration->setTitle($illustrationDTO->title);
-
-            // Handle file upload
-            $uploadedFile = $illustrationDTO->uploadedFile;
+        foreach ($trick->getIllustrations() as $illustration) {
+            $uploadedFile = $illustration->getUploadedFile();
             if ($uploadedFile) {
                 $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
                 try {
@@ -90,7 +82,7 @@ class TrickService
 
             $trick->addIllustration($illustration);
         }
-
+        $trick->generateSlug($slugger);
         $this->trickManager->persistAndFlushTrick($trick);
 
 //        $videosData = $form->get('videos')->getData();
@@ -109,18 +101,7 @@ class TrickService
 //        $this->persistAndFlushTrick($trick);
     }
 
-    public function createTrickDTO(Trick $trick): TrickDTO
-    {
-        $trickDTO = new TrickDTO();
-        $trickDTO->name = $trick->getName();
-        $trickDTO->description = $trick->getDescription();
-        $trickDTO->trickGroup = $trick->getTrickGroup();
-//        $trickDTO->illustrations = $trick->getIllustrations()->toArray();
-//        $trickDTO->videos = $trick->getVideos()->toArray();
-        return $trickDTO;
-    }
-
-    public function editTrick(TrickDTO $trickDTO)
+    public function editTrick(Trick $trick): void
     {
 
     }

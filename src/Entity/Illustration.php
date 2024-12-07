@@ -4,8 +4,7 @@ namespace App\Entity;
 
 use App\Repository\IllustrationRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: IllustrationRepository::class)]
 class Illustration
@@ -15,14 +14,13 @@ class Illustration
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $title = null;
-
     #[ORM\Column(length: 255)]
     private ?string $fileName = null;
 
     #[ORM\ManyToOne(inversedBy: 'illustrations')]
     private ?Trick $trick = null;
+
+    private ?UploadedFile $uploadedFile = null;
 
     public function getId(): ?int
     {
@@ -62,6 +60,16 @@ class Illustration
     {
         $this->trick = $trick;
 
+        return $this;
+    }
+    public function getUploadedFile(): ?UploadedFile
+    {
+        return $this->uploadedFile;
+    }
+
+    public function setUploadedFile(?UploadedFile $uploadedFile): self
+    {
+        $this->uploadedFile = $uploadedFile;
         return $this;
     }
 }

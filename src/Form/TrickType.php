@@ -28,7 +28,7 @@ class TrickType extends AbstractType
             ->add('trickGroup', EntityType::class, [
                 'class' => Group::class,
                 'label' => 'Groupe',
-                'choice_label' => 'name', // Display the name property in the dropdown
+                'choice_label' => 'name',
                 'placeholder' => 'Groupe du Trick',
             ])
             ->add('illustrations', CollectionType::class, [

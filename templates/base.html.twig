@@ -17,14 +17,15 @@
 <body class="d-flex flex-column h-100">
 {% include 'partials/_navbar.html.twig' %}
 <main class="content-container flex-grow-1" style="padding-top: 56px">
-        <div class="container">
+        <div class="container my-3" id="flash-messages-container">
         {% for label, messages in app.flashes %}
             {% for message in messages %}
                 <div role="alert" class="alert alert-{{ label }}">
                     {{ message }}
                 </div>
             {% endfor %}
-        {% endfor %} </div>
+        {% endfor %}
+        </div>
         {% block body %}{% endblock %}
 </main>
 {% include 'partials/_footer.html.twig' %}

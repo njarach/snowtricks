@@ -5,40 +5,18 @@
 {% block body %}
     <div class="container mt-3">
         <div class="row">
-            <h1>Modifier un Trick</h1>
+            <div class="d-flex justify-content-between">
+                <h1>Modifier un Trick</h1>
+                {% if trick is defined %}
+                    <form action="{{ path('app_trick_delete', { id: trick.id }) }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes vous sûr de vouloir supprimer ce Trick ?')">
+                            Supprimer
+                        </button>
+                    </form>
+                {% endif %}
+            </div>
             {% include 'trick/_form.html.twig' %}
-            {% if app.request.attributes.get('_route') == 'app_trick_edit' %}
-                <div id="images-wrapper" class="row">
-                    <h2>Images</h2>
-                    {% if trick.illustrations|length == 0 %}
-                        <span>Aucune image pour ce trick.</span>
-                    {% endif %}
-                    {% for illustration in trick.illustrations %}
-                        <div class="col-2">
-                            <img src="{{ asset('/uploads/'~illustration.filename) }}" alt="" width="150">
-                            <form action="{{ path('app_illustration_delete', {id: illustration.id}) }}" method="post" style="display:inline;">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ illustration.id) }}">
-                                <button type="submit" class="btn btn-danger"><i class="bi bi-trash-fill"></i></button>
-                            </form>
-                        </div>
-                    {% endfor %}
-                </div>
-                <div id="videos-wrapper" class="row">
-                    <h2>Videos</h2>
-                    {% if trick.videos|length == 0 %}
-                        <span>Aucune vidéo pour ce trick.</span>
-                    {% endif %}
-                    {% for video in trick.videos %}
-                        <div class="hstack gap-1 my-1">
-                            <iframe src="{{ video.embedLink }}" class="border border-dark border-1" allowfullscreen width="300"></iframe>
-                            <form action="{{ path('app_video_delete', {id: video.id}) }}" method="post" style="display:inline;">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ video.id) }}">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
         </div>
     </div>
 {% endblock %}

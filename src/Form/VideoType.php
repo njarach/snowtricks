@@ -17,6 +17,8 @@ class VideoType extends AbstractType
         $builder
             ->add('embedLink', UrlType::class, [
                 'label' => 'Ajouter une vidéo (URL)',
+                'required'=>false,
+                'empty_data'=>''
             ]);
         ;
     }

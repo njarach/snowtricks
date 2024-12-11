@@ -52,14 +52,15 @@ class TrickController extends AbstractController
      */
     #[Route('/create-trick', name: 'app_create_trick')]
     #[IsGranted('ROLE_VERIFIED_USER')]
-    public function new(Request $request, SluggerInterface $slugger): Response
+    public function new(Request $request): Response
     {
         $trick = new Trick();
         $form = $this->createForm(TrickType::class, $trick);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->trickService->createTrick($trick, $slugger);
+            $trick->setAuthor($this->getUser());
+            $this->trickService->createTrick($trick);
             $this->addFlash('success', 'Le Trick a été créé avec succès.');
             return $this->redirectToRoute('app_trick_index');
         }

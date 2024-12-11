@@ -15,28 +15,16 @@ class Illustration
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $fileName = null;
+    private ?string $fileName = '';
 
     #[ORM\ManyToOne(inversedBy: 'illustrations')]
-    private ?Trick $trick = null;
+    private ?Trick $trick;
 
     private ?UploadedFile $uploadedFile = null;
 
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
     }
 
     public function getFileName(): ?string

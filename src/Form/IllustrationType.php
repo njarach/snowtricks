@@ -17,6 +17,8 @@ class IllustrationType extends AbstractType
         $builder
             ->add('uploadedFile', FileType::class, [
                 'label' => 'Ajouter une image',
+                'required'=>false,
+                'empty_data'=>''
             ])
         ;
     }

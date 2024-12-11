@@ -1,60 +1,69 @@
 <div>
     {{ form_start(form) }}
+    {{ form_errors(form) }}
+    {{ form_row(form._token) }} {# Add manually if needed #}
     {{ form_row(form.name) }}
     {{ form_row(form.description) }}
     {{ form_row(form.trickGroup) }}
 
+    <button type="button" class="add_illustration_link btn btn-success mt-2" data-collection-holder-class="illustrations"><i class="bi bi-plus-circle text-light"></i> Ajouter une illustration</button>
     <ul class="illustrations" data-prototype="{{ form_widget(form.illustrations.vars.prototype)|e }}"
         data-index="{{ form.illustrations|length > 0 ? form.illustrations|last.vars.name + 1 : 0 }}">
     </ul>
-    <button type="button" class="add_illustration_link btn btn-primary" data-collection-holder-class="illustrations">Ajouter une illustration</button>
-    <div >
-        {{ form_widget(form.illustrations) }}
-    </div>
-    <div data-prototype="{{ form_widget(form.videos.vars.prototype)|e }}">
-        {{ form_widget(form.videos) }}
-    </div>
 
-    <div id="button-wrapper" class="my-3">
-        <button class="btn btn-primary">Enregistrer</button>
-        <button type="button" class="btn btn-secondary" onclick="window.history.back();">Retour</button>
-    </div>
+    <button type="button" class="add_video_link btn btn-success mt-2" data-collection-holder-class="videos">
+        <i class="bi bi-plus-circle text-light"></i> Ajouter une vidéo
+    </button>
+    <ul class="videos"
+        data-prototype="{{ form_widget(form.videos.vars.prototype)|e }}"
+        data-index="{{ form.videos|length > 0 ? form.videos|last.vars.name + 1 : 0 }}">
+    </ul>
 
-    {{ form_end(form) }}
+    <hr class="mb-2">
+    {{ form_row(form.submit) }}
 
-    {% if trick is defined %}
-        <form action="{{ path('app_trick_delete', { id: trick.id }) }}" method="post" class="d-inline">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes vous sûr de vouloir supprimer ce Trick ?')">
-                Supprimer
-            </button>
-        </form>
-    {% endif %}
+    <button type="button" class="btn btn-secondary" onclick="window.history.back();">Retour</button>
+
+    {{ form_end(form, { 'render_rest': false }) }}
 </div>
 
-<script>
-    document
-        .querySelectorAll('.add_illustration_link')
-        .forEach(btn => {
-            btn.addEventListener("click", addFormToCollection)
-        });
+{% if app.request.attributes.get('_route') == 'app_trick_edit' %}
+    <hr class="mt-2">
+    <h3>Images</h3>
+    <div id="images-wrapper">
+        {% if trick.illustrations|length == 0 %}
+            <span>Aucune image pour ce trick.</span>
+        {% endif %}
+        {% for illustration in trick.illustrations %}
+            <div class="col-2 position-relative">
+                <img src="{{ asset('/uploads/' ~ illustration.filename) }}" alt="" width="150" class="img-thumbnail">
+                <form action="{{ path('app_illustration_delete', {id: illustration.id}) }}" method="post" style="display:inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ illustration.id) }}">
+                    <button type="submit" class="btn btn-danger trick-illustration-delete-icon"><i class="bi bi-trash-fill"></i></button>
+                </form>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 
-    function addFormToCollection(e) {
-        const collectionHolder = document.querySelector('.' + e.currentTarget.dataset.collectionHolderClass);
+    {% if app.request.attributes.get('_route') == 'app_trick_edit' %}
+        <hr>
+        <h3>Videos</h3>
+        <div id="videos-wrapper">
+            {% if trick.videos|length == 0 %}
+                <span>Aucune vidéo pour ce trick.</span>
+            {% endif %}
+            {% for video in trick.videos %}
+                <div class="col-2 position-relative">
+                    <iframe src="{{ video.embedLink }}" class="border border-dark border-1 img-thumbnail"></iframe>
+                    <form action="{{ path('app_video_delete', {id: video.id}) }}" method="post" style="display:inline;">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ video.id) }}">
+                        <button type="submit" class="btn btn-danger trick-illustration-delete-icon"><i class="bi bi-trash-fill"></i></button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 
-        const item = document.createElement('li');
 
-        item.innerHTML = collectionHolder
-            .dataset
-            .prototype
-            .replace(
-                /__name__/g,
-                collectionHolder.dataset.index
-            );
-
-        collectionHolder.appendChild(item);
-
-        collectionHolder.dataset.index++;
-    }
-</script>
 

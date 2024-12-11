@@ -13,11 +13,8 @@ class Video
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $title = null;
-
     #[ORM\Column(length: 255)]
-    private ?string $embedLink = null;
+    private ?string $embedLink = '';
 
     #[ORM\ManyToOne(inversedBy: 'videos')]
     private ?Trick $trick = null;
@@ -25,18 +22,6 @@ class Video
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
-
-    public function setTitle(string $title): static
-    {
-        $this->title = $title;
-
-        return $this;
     }
 
     public function getEmbedLink(): ?string

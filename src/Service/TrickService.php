@@ -5,6 +5,7 @@ namespace App\Service;
 use App\DTO\TrickDTO;
 use App\Entity\Illustration;
 use App\Entity\Trick;
+use App\Entity\Video;
 use App\Service\Manager\TrickManager;
 use App\Service\Paginator\PaginatorService;
 use Exception;
@@ -58,16 +59,14 @@ class TrickService
 
     /**
      * @param Trick $trick
-     * @param SluggerInterface $slugger
      * @return void
      * @throws Exception
      */
-    public function createTrick(Trick $trick, SluggerInterface $slugger): void
+    public function createTrick(Trick $trick,): void
     {
-
         foreach ($trick->getIllustrations() as $illustration) {
             $uploadedFile = $illustration->getUploadedFile();
-            if ($uploadedFile) {
+            if (!empty($uploadedFile)) {
                 $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
                 try {
                     $uploadedFile->move(
@@ -79,30 +78,48 @@ class TrickService
                 }
                 $illustration->setFileName($newFilename);
             }
-
             $trick->addIllustration($illustration);
         }
-        $trick->generateSlug($slugger);
+        foreach ($trick->getVideos() as $video)
+        {
+            if (empty($video))
+            {
+                $trick->removeVideo($video);
+            }
+        }
+        $trick->generateSlug($this->slugger);
         $this->trickManager->persistAndFlushTrick($trick);
-
-//        $videosData = $form->get('videos')->getData();
-//
-//        $videos = explode(',', $videosData);
-//
-//        foreach ($videos as $video) {
-//            $newVideo = new Video();
-//            $newVideo->setEmbedLink($video);
-//            $newVideo->setTitle('Video');
-//            $newVideo->setTrick($trick);
-//            $trick->addVideo($newVideo);
-//        }
-//
-//        $trick->generateSlug($slugger);
-//        $this->persistAndFlushTrick($trick);
     }
 
+    /**
+     * @throws Exception
+     */
     public function editTrick(Trick $trick): void
     {
-
+        foreach ($trick->getIllustrations() as $illustration) {
+            $uploadedFile = $illustration->getUploadedFile();
+            if (!empty($uploadedFile)) {
+                $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+                try {
+                    $uploadedFile->move(
+                        $this->parameterBag->get('uploads_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('File upload failed: ' . $e->getMessage());
+                }
+                $illustration->setFileName($newFilename);
+            }
+            $trick->addIllustration($illustration);
+        }
+        foreach ($trick->getVideos() as $video)
+        {
+            if (empty($video))
+            {
+                $trick->removeVideo($video);
+            }
+        }
+        $trick->generateSlug($this->slugger);
+        $this->trickManager->persistAndFlushTrick($trick);
     }
 }

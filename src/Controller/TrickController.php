@@ -30,7 +30,7 @@ class TrickController extends AbstractController
     public function index(Request $request): Response
     {
         $page = $request->query->getInt('page', 1);
-        $paginationData = $this->trickService->getPaginatedTricks($page);
+        $paginationData = $this->trickService->getPaginatedTricks($page, 8);
         return $this->render('trick/index.html.twig', [
             'tricks' => $paginationData['items'],
             'currentPage' => $paginationData['currentPage'],
@@ -101,9 +101,13 @@ class TrickController extends AbstractController
             foreach ($illustrations as $illustration)
             {
                 $filename = $illustration->getFileName();
-                $uploadsDir = $this->getParameter('uploads_directory');
-                unlink($uploadsDir . '/' . $filename);
+                if (!empty($filename))
+                {
+                    $uploadsDir = $this->getParameter('uploads_directory');
+                    unlink($uploadsDir . '/' . $filename);
+                }
             }
+
             $this->trickService->removeTrick($trick);
 
             $this->addFlash('success', 'Le Trick a été supprimé avec succès.');

@@ -1,31 +1,5 @@
 <div class="row" id="tricks-list">
     {% for trick in tricks %}
-        <div class="col-md-2 mb-4">
-            <div class="card h-100">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a href="{{ path('app_trick_show', { slug: trick.slug }) }}">
-                            <h5 class="mb-0">{{ trick.name }}</h5>
-                        </a>
-                        {% if is_granted('ROLE_VERIFIED_USER') %}
-                            <div>
-                                <a href="{{ path('app_trick_edit', { id: trick.id }) }}" class="text-primary me-2" title="Modifier">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <form action="{{ path('app_trick_delete', { id: trick.id }) }}" method="post" class="d-inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
-                                    <button type="submit" class="btn btn-link text-danger p-0" title="Supprimer" onclick="return confirm('Êtes vous sûr de vouloir supprimer ce Trick ?')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="card-body">
-                    <p class="card-text">{{ trick.description }}</p>
-                </div>
-            </div>
-        </div>
+        {% include 'trick/_trick_card.html.twig' %}
     {% endfor %}
 </div>

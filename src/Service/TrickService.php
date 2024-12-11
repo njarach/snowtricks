@@ -2,15 +2,11 @@
 
 namespace App\Service;
 
-use App\DTO\TrickDTO;
-use App\Entity\Illustration;
 use App\Entity\Trick;
-use App\Entity\Video;
 use App\Service\Manager\TrickManager;
 use App\Service\Paginator\PaginatorService;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -64,37 +60,23 @@ class TrickService
      */
     public function createTrick(Trick $trick,): void
     {
-        foreach ($trick->getIllustrations() as $illustration) {
-            $uploadedFile = $illustration->getUploadedFile();
-            if (!empty($uploadedFile)) {
-                $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
-                try {
-                    $uploadedFile->move(
-                        $this->parameterBag->get('uploads_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    throw new \Exception('File upload failed: ' . $e->getMessage());
-                }
-                $illustration->setFileName($newFilename);
-            }
-            $trick->addIllustration($illustration);
-        }
-        foreach ($trick->getVideos() as $video)
-        {
-            if (empty($video))
-            {
-                $trick->removeVideo($video);
-            }
-        }
-        $trick->generateSlug($this->slugger);
-        $this->trickManager->persistAndFlushTrick($trick);
+        $this->handleTrickFormData($trick);
     }
 
     /**
      * @throws Exception
      */
     public function editTrick(Trick $trick): void
+    {
+        $this->handleTrickFormData($trick);
+    }
+
+    /**
+     * @param Trick $trick
+     * @return void
+     * @throws Exception
+     */
+    private function handleTrickFormData(Trick $trick): void
     {
         foreach ($trick->getIllustrations() as $illustration) {
             $uploadedFile = $illustration->getUploadedFile();
@@ -112,10 +94,8 @@ class TrickService
             }
             $trick->addIllustration($illustration);
         }
-        foreach ($trick->getVideos() as $video)
-        {
-            if (empty($video))
-            {
+        foreach ($trick->getVideos() as $video) {
+            if (empty($video)) {
                 $trick->removeVideo($video);
             }
         }

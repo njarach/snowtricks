@@ -1,12 +1,15 @@
 <div>
     {{ form_start(form) }}
     {{ form_errors(form) }}
-    {{ form_row(form._token) }} {# Add manually if needed #}
+{#    We add this manually because apparently, as opposed to the documentation, it didn't render automatically ??!! #}
+    {{ form_row(form._token) }}
     {{ form_row(form.name) }}
     {{ form_row(form.description) }}
     {{ form_row(form.trickGroup) }}
 
-    <button type="button" class="add_illustration_link btn btn-success mt-2" data-collection-holder-class="illustrations"><i class="bi bi-plus-circle text-light"></i> Ajouter une illustration</button>
+    <button type="button" class="add_illustration_link btn btn-success mt-2" data-collection-holder-class="illustrations">
+        <i class="bi bi-plus-circle text-light"></i> Ajouter une illustration
+    </button>
     <ul class="illustrations" data-prototype="{{ form_widget(form.illustrations.vars.prototype)|e }}"
         data-index="{{ form.illustrations|length > 0 ? form.illustrations|last.vars.name + 1 : 0 }}">
     </ul>
@@ -39,7 +42,7 @@
                 <img src="{{ asset('/uploads/' ~ illustration.filename) }}" alt="" width="150" class="img-thumbnail">
                 <form action="{{ path('app_illustration_delete', {id: illustration.id}) }}" method="post" style="display:inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ illustration.id) }}">
-                    <button type="submit" class="btn btn-danger trick-illustration-delete-icon"><i class="bi bi-trash-fill"></i></button>
+                    <button type="submit" class="btn btn-danger trick-illustration-delete-icon" onclick="confirm('Souhaitez-vous vraiment supprimer cette illustration ?')"><i class="bi bi-trash-fill"></i></button>
                 </form>
             </div>
         {% endfor %}
@@ -58,7 +61,7 @@
                     <iframe src="{{ video.embedLink }}" class="border border-dark border-1 img-thumbnail"></iframe>
                     <form action="{{ path('app_video_delete', {id: video.id}) }}" method="post" style="display:inline;">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ video.id) }}">
-                        <button type="submit" class="btn btn-danger trick-illustration-delete-icon"><i class="bi bi-trash-fill"></i></button>
+                        <button type="submit" class="btn btn-danger trick-illustration-delete-icon" onclick="confirm('Souhaitez-vous vraiment supprimer cette vidéo ?')"><i class="bi bi-trash-fill"></i></button>
                     </form>
                 </div>
             {% endfor %}

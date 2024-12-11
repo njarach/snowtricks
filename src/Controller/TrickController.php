@@ -108,7 +108,7 @@ class TrickController extends AbstractController
 
             $this->addFlash('success', 'Le Trick a été supprimé avec succès.');
         } else {
-            $this->addFlash('error', 'Token CRSF invalide.');
+            $this->addFlash('error', 'Token CSRF invalide.');
         }
 
         return $this->redirectToRoute('app_trick_index');
@@ -122,7 +122,7 @@ class TrickController extends AbstractController
         $trick = $illustration->getTrick();
 
         if (!$this->isCsrfTokenValid('delete' . $illustration->getId(), $request->request->get('_token'))) {
-            $this->addFlash('error', 'Invalid CSRF token');
+            $this->addFlash('error', 'Token CSRF invalide.');
             return $this->redirectToRoute('app_trick_edit', ['id' => $trick->getId()]);
         }
 

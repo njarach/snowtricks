@@ -12,7 +12,7 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
 class Trick
 {
-    private string $originalName;
+    private ?string $originalName = null;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -35,13 +35,13 @@ class Trick
     /**
      * @var Collection<int, Illustration>
      */
-    #[ORM\OneToMany(targetEntity: Illustration::class, mappedBy: 'trick')]
+    #[ORM\OneToMany(targetEntity: Illustration::class, mappedBy: 'trick', cascade: ['persist','remove'])]
     private Collection $illustrations;
 
     /**
      * @var Collection<int, Video>
      */
-    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'trick')]
+    #[ORM\OneToMany(targetEntity: Video::class, mappedBy: 'trick', cascade: ['persist','remove'])]
     private Collection $videos;
 
     #[ORM\Column(length: 200, unique: true)]
@@ -193,17 +193,18 @@ class Trick
 
     public function nameChanged(): bool
     {
-        return $this->name !== $this->originalName;
+        return $this->originalName !== null && $this->name !== $this->originalName;
     }
 
     #[ORM\PrePersist]
     #[ORM\PreUpdate]
-    public function generateSlug(SluggerInterface $slugger): void
+    public function generateSlug(SluggerInterface $slugger): self
     {
         if (empty($this->slug) || $this->nameChanged())
         {
             $this->slug = $slugger->slug($this->name)->lower();
         }
+        return $this;
     }
 
     /**

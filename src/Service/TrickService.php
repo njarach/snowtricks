@@ -3,6 +3,7 @@
 namespace App\Service;
 
 use App\Entity\Trick;
+use App\Service\Manager\MessageManager;
 use App\Service\Manager\TrickManager;
 use App\Service\Paginator\PaginatorService;
 use Exception;
@@ -13,14 +14,16 @@ use Symfony\Component\String\Slugger\SluggerInterface;
 class TrickService
 {
     private TrickManager $trickManager;
+    private MessageManager $messageManager;
     private ParameterBagInterface $parameterBag;
     private SluggerInterface $slugger;
 
-    public function __construct(TrickManager $trickManager, ParameterBagInterface $parameterBag, SluggerInterface $slugger)
+    public function __construct(TrickManager $trickManager, MessageManager $messageManager, ParameterBagInterface $parameterBag, SluggerInterface $slugger)
     {
         $this->trickManager = $trickManager;
         $this->parameterBag = $parameterBag;
         $this->slugger = $slugger;
+        $this->messageManager = $messageManager;
     }
 
     public function getPaginatedTricks(int $page = 1, int $limit = 5): array
@@ -58,7 +61,7 @@ class TrickService
      * @return void
      * @throws Exception
      */
-    public function createTrick(Trick $trick,): void
+    public function createTrick(Trick $trick): void
     {
         $this->handleTrickFormData($trick);
     }
@@ -84,7 +87,7 @@ class TrickService
                 $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
                 try {
                     $uploadedFile->move(
-                        $this->parameterBag->get('uploads_directory'),
+                        $this->parameterBag->get('uploads_directory/images'),
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -125,5 +128,12 @@ class TrickService
                 $trick->removeIllustration($illustration);
             }
         }
+    }
+
+    public function getPaginatedMessages(Trick $trick, int $page, int $limit = 10): array
+    {
+        $query = $this->messageManager->getMessagesFromTrick($trick);
+        $paginator = new PaginatorService();
+        return $paginator->paginate($query,$page, $limit);
     }
 }

@@ -39,11 +39,16 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/{slug}', name: 'app_trick_show', requirements: ['slug' => '[a-z0-9\-]+'])]
-    public function show(EntityManagerInterface $entityManager, string $slug): Response
+    public function show(EntityManagerInterface $entityManager, Request $request, string $slug): Response
     {
         $trick = $entityManager->getRepository(Trick::class)->findOneBy(['slug' => $slug]);
+        $page = $request->query->getInt('page',1);
+        $paginatedMessageData = $this->trickService->getPaginatedMessages($trick,$page,10);
         return $this->render('trick/show.html.twig', [
-            'trick' => $trick
+            'trick' => $trick,
+            'messages'=> $paginatedMessageData['items'],
+            'currentPage' => $paginatedMessageData['currentPage'],
+            'totalPages' => $paginatedMessageData['totalPages']
         ]);
     }
 

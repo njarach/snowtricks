@@ -16,83 +16,121 @@
 
             <div id="imageCarousel" class="carousel slide mb-4">
                 {% if trick.illustrations|length == 0 and trick.videos|length == 0 %}
-                <div class="text-center">
-                    <p>Aucun média n'a été trouvé pour ce Trick... <i class="bi-emoji-frown"></i></p>
-                </div>
+                    <div class="text-center">
+                        <p>Aucun média n'a été trouvé pour ce Trick... <i class="bi-emoji-frown"></i></p>
+                    </div>
                 {% else %}
-                <div class="carousel-indicators">
-                    {% for i in 0..(trick.illustrations|length + trick.videos|length - 1) %}
-                        <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ i }}"
-                                class="{% if i == 0 %}active{% endif %}"
-                                aria-current="{% if i == 0 %}true{% endif %}"
-                                aria-label="Slide {{ i + 1 }}"></button>
-                    {% endfor %}
-                </div>
+                    <div class="carousel-indicators">
+                        {% for i in 0..(trick.illustrations|length + trick.videos|length - 1) %}
+                            <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ i }}"
+                                    class="{% if i == 0 %}active{% endif %}"
+                                    aria-current="{% if i == 0 %}true{% endif %}"
+                                    aria-label="Slide {{ i + 1 }}"></button>
+                        {% endfor %}
+                    </div>
 
-                <div class="carousel-inner">
-                    {% for image in trick.illustrations %}
-                        <div class="carousel-item{% if loop.first %} active{% endif %}">
-                            <img src="{{ asset('/uploads/'~image.filename) }}" class="d-block mx-auto carousel-media" alt="{{ image.filename }}">
-                        </div>
-                    {% endfor %}
-                    {% for video in trick.videos %}
-                        <div class="carousel-item {% if trick.illustrations|length == 0 and loop.first %}active{% endif %}">
-                            <iframe
-                                    src="{{ video.embedLink }}"
-                                    allowfullscreen
-                                    class="d-block mx-auto carousel-media">
-                            </iframe>
-                        </div>
-                    {% endfor %}
-                </div>
+                    <div class="carousel-inner">
+                        {% for image in trick.illustrations %}
+                            <div class="carousel-item{% if loop.first %} active{% endif %}">
+                                <img src="{{ asset('/uploads/images/'~image.filename) }}" class="d-block mx-auto carousel-media" alt="{{ image.filename }}">
+                            </div>
+                        {% endfor %}
+                        {% for video in trick.videos %}
+                            <div class="carousel-item {% if trick.illustrations|length == 0 and loop.first %}active{% endif %}">
+                                <iframe
+                                        src="{{ video.embedLink }}"
+                                        allowfullscreen
+                                        class="d-block mx-auto carousel-media">
+                                </iframe>
+                            </div>
+                        {% endfor %}
+                    </div>
 
-                <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
-                    <i class="bi bi-chevron-left text-dark carousel-control-prev-icon"></i>
-                    <span class="visually-hidden">Précédent</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
-                    <i class="bi bi-chevron-right text-dark carousel-control-next-icon"></i>
-                    <span class="visually-hidden">Suivant</span>
-                </button>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                        <i class="bi bi-chevron-left text-dark carousel-control-prev-icon"></i>
+                        <span class="visually-hidden">Précédent</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                        <i class="bi bi-chevron-right text-dark carousel-control-next-icon"></i>
+                        <span class="visually-hidden">Suivant</span>
+                    </button>
                 {% endif %}
             </div>
 
             <div class="hstack gap-1 mb-4">
-            {% if is_granted('ROLE_VERIFIED_USER') %}
-                <a href="{{ path('app_trick_edit', {'id':trick.id}) }}" class="btn btn-primary">Modifier</a>
-                <form action="{{ path('app_trick_delete', { id: trick.id }) }}" method="post" class="d-inline">
-                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
-                    <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes vous sûr de vouloir supprimer ce Trick ?')">
-                        Supprimer
-                    </button>
-                </form>
-            {% endif %}
+                {% if is_granted('ROLE_VERIFIED_USER') %}
+                    <a href="{{ path('app_trick_edit', {'id':trick.id}) }}" class="btn btn-primary">Modifier</a>
+                    <form action="{{ path('app_trick_delete', { id: trick.id }) }}" method="post" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trick.id) }}">
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes vous sûr de vouloir supprimer ce Trick ?')">
+                            Supprimer
+                        </button>
+                    </form>
+                {% endif %}
                 <a href="{{ path('app_trick_index') }}" class="btn btn-secondary">Retour à la liste</a>
             </div>
 
             <div class="mb-5">
                 <h3>Messages</h3>
-                {% if trick.messages is empty %}
+                {% if messages is empty %}
                     <p>Aucun message. Soyez le premier à commenter ce trick !</p>
                 {% else %}
                     <ul class="list-unstyled">
-                        {% for message in trick.messages %}
-                            <li class="mb-3">
-                                <strong>{{ message.user }}</strong> - <small class="text-muted">{{ message.createdAt|date('F j, Y, g:i a') }}</small>
-                                <p>{{ message.content }}</p>
-                            </li>
+                        {% for message in messages %}
+                            <div class="card mb-3">
+                                <div class="row g-0">
+                                    <div class="col-3 col-md-2 d-flex justify-content-center align-items-center">
+                                        {% if message.author.profilePicture is empty %}
+                                            {% set profile_picture = asset('uploads/profile_pictures/profile_picture_placeholder.png') %}
+                                        {% else %}
+                                            {% set profile_picture = asset('uploads/profile_pictures/' ~ message.author.profilePicture) %}
+                                        {% endif %}
+                                        <img src="{{ profile_picture }}" alt="Image de profil" class="img-fluid rounded-circle"
+                                             style="max-width: 80px; height: auto;">
+                                    </div>
+                                    <div class="col-9 col-md-10">
+                                        <div class="card-body">
+                                            <h5 class="card-title mb-0">{{ message.author.username }}</h5>
+                                            <small class="text-muted">{{ message.createdAt|date('F j, Y, g:i a') }}</small>
+                                            <p class="card-text mt-2">{{ message.content }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         {% endfor %}
-                    </ul>
-                {% endif %}
 
-                {% if is_granted('ROLE_VERIFIED_USER') %}
-                    {#            <form method="post" action="{{ path('message_add', {'trick_id': trick.id}) }}"> #}
-                    <div class="mb-3">
-                        <label for="messageContent" class="form-label">Ajouter un message</label>
-                        <textarea class="form-control" id="messageContent" name="message_content" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Envoyer</button>
-                    {#            </form> #}
+                        {% if is_granted('ROLE_VERIFIED_USER') %}
+                            <form method="post" action="{{ path('app_create_message', {'id': trick.id}) }}">
+                                <div class="mb-3">
+                                    <label for="messageContent" class="form-label">Ajouter un message</label>
+                                    <textarea class="form-control" id="messageContent" name="message_content" rows="3" required></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Envoyer</button>
+                            </form>
+                        {% endif %}
+
+                        <nav aria-label="Messages pagination" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item {% if currentPage == 1 %}disabled{% endif %}">
+                                    <a class="page-link" href="{{ path('app_trick_show', { page: currentPage - 1, 'slug':trick.slug }) }}" aria-label="Précédent">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                {% for i in 1..totalPages %}
+                                    <li class="page-item {% if i == currentPage %}active{% endif %}">
+                                        <a class="page-link" href="{{ path('app_trick_show', { page: i, 'slug':trick.slug }) }}">{{ i }}</a>
+                                    </li>
+                                {% endfor %}
+
+                                <li class="page-item {% if currentPage == totalPages %}disabled{% endif %}">
+                                    <a class="page-link" href="{{ path('app_trick_show', { page: currentPage + 1, 'slug':trick.slug }) }}" aria-label="Suivant">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </ul>
                 {% endif %}
             </div>
         </div>

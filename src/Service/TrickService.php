@@ -3,11 +3,14 @@
 namespace App\Service;
 
 use App\Entity\Trick;
+use App\Entity\Video;
 use App\Service\Manager\MessageManager;
 use App\Service\Manager\TrickManager;
 use App\Service\Paginator\PaginatorService;
+use Doctrine\Common\Collections\Collection;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -87,7 +90,7 @@ class TrickService
                 $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
                 try {
                     $uploadedFile->move(
-                        $this->parameterBag->get('uploads_directory/images'),
+                        $this->parameterBag->get('images_uploads_directory'),
                         $newFilename
                     );
                 } catch (FileException $e) {
@@ -135,5 +138,21 @@ class TrickService
         $query = $this->messageManager->getMessagesFromTrick($trick);
         $paginator = new PaginatorService();
         return $paginator->paginate($query,$page, $limit);
+    }
+
+    public function bindVideoLinks(FormInterface $form, Trick $trick): void
+    {
+        $videos = $form->get('videos')->getData();
+
+        // Debug the data
+//        dd($videos);
+
+        // Process the data as needed
+        foreach ($videos as $videoData) {
+            // Example: Add videos to the Trick entity manually
+            $video = new Video();
+            $video->setEmbedLink($videoData->getEmbedLink());
+            $trick->addVideo($video);
+        }
     }
 }

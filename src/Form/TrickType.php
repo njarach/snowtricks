@@ -41,11 +41,11 @@ class TrickType extends AbstractType
                 'entry_type' => VideoType::class,
                 'allow_add' => true,
                 'by_reference' => false,
+                'mapped'=>false
             ])
             ->add('submit', SubmitType::class, [
                 'label'=>'Enregistrer'
             ]);
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

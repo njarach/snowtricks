@@ -65,6 +65,7 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setAuthor($this->getUser());
+            $this->trickService->bindVideoLinks($form);
             $this->trickService->createTrick($trick);
             $this->addFlash('success', 'Le Trick a été créé avec succès.');
             return $this->redirectToRoute('app_trick_index');
@@ -86,6 +87,7 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $this->trickService->bindVideoLinks($form, $trick);
             $this->trickService->editTrick($trick);
             $this->addFlash('success', 'Le Trick a été modifié avec succès.');
             return $this->redirectToRoute('app_trick_index');
@@ -108,7 +110,7 @@ class TrickController extends AbstractController
                 $filename = $illustration->getFileName();
                 if (!empty($filename))
                 {
-                    $uploadsDir = $this->getParameter('uploads_directory');
+                    $uploadsDir = $this->getParameter('images_uploads_directory');
                     unlink($uploadsDir . '/' . $filename);
                 }
             }
@@ -136,7 +138,7 @@ class TrickController extends AbstractController
         }
 
         $filename = $illustration->getFileName();
-        $uploadsDir = $this->getParameter('uploads_directory');
+        $uploadsDir = $this->getParameter('images_uploads_directory');
         unlink($uploadsDir . '/' . $filename);
 
         $entityManager->remove($illustration);

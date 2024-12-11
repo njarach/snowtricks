@@ -32,7 +32,7 @@
                     <div class="carousel-inner">
                         {% for image in trick.illustrations %}
                             <div class="carousel-item{% if loop.first %} active{% endif %}">
-                                <img src="{{ asset('/uploads/images/'~image.filename) }}" class="d-block mx-auto carousel-media" alt="{{ image.filename }}">
+                                <img src="{{ asset('/uploads/images/' ~ image.filename) }}" class="d-block mx-auto carousel-media" alt="{{ image.filename }}">
                             </div>
                         {% endfor %}
                         {% for video in trick.videos %}

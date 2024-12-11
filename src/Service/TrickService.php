@@ -92,14 +92,38 @@ class TrickService
                 }
                 $illustration->setFileName($newFilename);
             }
-            $trick->addIllustration($illustration);
         }
+
+        $this->removeEmptyLinkVideos($trick);
+        $this->removeEmptyFilenameIllustrations($trick);
+
+        $trick->generateSlug($this->slugger);
+        $this->persistAndFlushTrick($trick);
+    }
+
+    /**
+     * @param Trick $trick
+     * @return void
+     */
+    private function removeEmptyLinkVideos(Trick $trick): void
+    {
         foreach ($trick->getVideos() as $video) {
-            if (empty($video)) {
+            if (empty($video->getEmbedLink())) {
                 $trick->removeVideo($video);
             }
         }
-        $trick->generateSlug($this->slugger);
-        $this->trickManager->persistAndFlushTrick($trick);
+    }
+
+    /**
+     * @param Trick $trick
+     * @return void
+     */
+    private function removeEmptyFilenameIllustrations(Trick $trick): void
+    {
+        foreach ($trick->getIllustrations() as $illustration) {
+            if (empty($illustration->getFileName())) {
+                $trick->removeIllustration($illustration);
+            }
+        }
     }
 }

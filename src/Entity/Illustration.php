@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\IllustrationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 #[ORM\Entity(repositoryClass: IllustrationRepository::class)]
 class Illustration
@@ -13,40 +14,27 @@ class Illustration
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $title = null;
-
     #[ORM\Column(length: 255)]
-    private ?string $filePath = null;
+    private ?string $fileName = '';
 
     #[ORM\ManyToOne(inversedBy: 'illustrations')]
-    private ?Trick $trick = null;
+    private ?Trick $trick;
+
+    private ?UploadedFile $uploadedFile = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getFileName(): ?string
     {
-        return $this->title;
+        return $this->fileName;
     }
 
-    public function setTitle(string $title): static
+    public function setFileName(string $fileName): static
     {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getFilePath(): ?string
-    {
-        return $this->filePath;
-    }
-
-    public function setFilePath(string $filePath): static
-    {
-        $this->filePath = $filePath;
+        $this->fileName = $fileName;
 
         return $this;
     }
@@ -60,6 +48,16 @@ class Illustration
     {
         $this->trick = $trick;
 
+        return $this;
+    }
+    public function getUploadedFile(): ?UploadedFile
+    {
+        return $this->uploadedFile;
+    }
+
+    public function setUploadedFile(?UploadedFile $uploadedFile): self
+    {
+        $this->uploadedFile = $uploadedFile;
         return $this;
     }
 }

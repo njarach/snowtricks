@@ -26,7 +26,7 @@ class TrickManager
      * @param Trick $trick
      * @return void
      */
-    public function persistTrick(Trick $trick): void
+    public function persistAndFlushTrick(Trick $trick): void
     {
         $this->entityManager->persist($trick);
         $this->entityManager->flush();

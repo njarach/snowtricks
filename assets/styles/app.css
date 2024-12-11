@@ -12,3 +12,7 @@ body {
 .content-container {
     flex: 1;
 }
+
+.position-relative {
+    position: relative;
+}

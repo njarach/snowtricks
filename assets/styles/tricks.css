@@ -1,4 +1,3 @@
-/* Ensures spacing in posted tricks section (index) */
 .posts-section {
     padding: 50px 15px;
     color: #333;
@@ -7,12 +6,17 @@
 .carousel-media {
     width: 300px;
     height: 300px;
-    object-fit: cover; /* Ensures the media fits inside the box while maintaining aspect ratio */
+    object-fit: cover;
 }
 
+/* Here carousel styling in trick show */
 .carousel-item iframe {
-    max-width: 100%; /* Ensure iframe does not exceed the carousel bounds */
+    max-width: 100%;
     max-height: 100%;
+}
+
+.carousel-control-next-icon, .carousel-control-prev-icon {
+    font-size: 3.55rem;
 }
 
 /* Here is styling for various images and thumbnails inside trick forms */

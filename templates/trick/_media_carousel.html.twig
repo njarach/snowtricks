@@ -1,0 +1,42 @@
+<div id="imageCarousel" class="carousel slide mb-4">
+    {% if trick.illustrations|length == 0 and trick.videos|length == 0 %}
+        <div class="text-center">
+            <p>Aucun média n'a été trouvé pour ce Trick... <i class="bi-emoji-frown"></i></p>
+        </div>
+    {% else %}
+        <div class="carousel-indicators">
+            {% for i in 0..(trick.illustrations|length + trick.videos|length - 1) %}
+                <button type="button" data-bs-target="#imageCarousel" data-bs-slide-to="{{ i }}"
+                        class="{% if i == 0 %}active{% endif %}"
+                        aria-current="{% if i == 0 %}true{% endif %}"
+                        aria-label="Slide {{ i + 1 }}"></button>
+            {% endfor %}
+        </div>
+
+        <div class="carousel-inner">
+            {% for image in trick.illustrations %}
+                <div class="carousel-item{% if loop.first %} active{% endif %}">
+                    <img src="{{ asset('/uploads/images/' ~ image.filename) }}" class="d-block mx-auto carousel-media" alt="{{ image.filename }}">
+                </div>
+            {% endfor %}
+            {% for video in trick.videos %}
+                <div class="carousel-item {% if trick.illustrations|length == 0 and loop.first %}active{% endif %}">
+                    <iframe
+                            src="{{ video.embedLink }}"
+                            allowfullscreen
+                            class="d-block mx-auto carousel-media">
+                    </iframe>
+                </div>
+            {% endfor %}
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+            <i class="bi bi-chevron-left text-dark carousel-control-prev-icon"></i>
+            <span class="visually-hidden">Précédent</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+            <i class="bi bi-chevron-right text-dark carousel-control-next-icon"></i>
+            <span class="visually-hidden">Suivant</span>
+        </button>
+    {% endif %}
+</div>

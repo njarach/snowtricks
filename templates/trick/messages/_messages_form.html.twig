@@ -1,0 +1,9 @@
+{% if is_granted('ROLE_VERIFIED_USER') %}
+    <form method="post" action="{{ path('app_create_message', {'id': trick.id}) }}">
+        <div class="mb-3">
+            <label for="messageContent" class="form-label">Ajouter un message</label>
+            <textarea class="form-control" id="messageContent" name="message_content" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Envoyer</button>
+    </form>
+{% endif %}

@@ -39,11 +39,16 @@ class TrickController extends AbstractController
     }
 
     #[Route('/trick/{slug}', name: 'app_trick_show', requirements: ['slug' => '[a-z0-9\-]+'])]
-    public function show(EntityManagerInterface $entityManager, string $slug): Response
+    public function show(EntityManagerInterface $entityManager, Request $request, string $slug): Response
     {
         $trick = $entityManager->getRepository(Trick::class)->findOneBy(['slug' => $slug]);
+        $page = $request->query->getInt('page',1);
+        $paginatedMessageData = $this->trickService->getPaginatedMessages($trick,$page,10);
         return $this->render('trick/show.html.twig', [
-            'trick' => $trick
+            'trick' => $trick,
+            'messages'=> $paginatedMessageData['items'],
+            'currentPage' => $paginatedMessageData['currentPage'],
+            'totalPages' => $paginatedMessageData['totalPages']
         ]);
     }
 
@@ -60,7 +65,9 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setAuthor($this->getUser());
-            $this->trickService->createTrick($trick);
+            $this->trickService->bindVideoLinks($form, $trick);
+            $this->trickService->bindIllustrationFilename($form, $trick);
+            $this->trickService->cleanUpAndPersistTrickData($trick);
             $this->addFlash('success', 'Le Trick a été créé avec succès.');
             return $this->redirectToRoute('app_trick_index');
         }
@@ -81,7 +88,9 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->trickService->editTrick($trick);
+            $this->trickService->bindVideoLinks($form, $trick);
+            $this->trickService->bindIllustrationFilename($form, $trick);
+            $this->trickService->cleanupAndPersistTrickData($trick);
             $this->addFlash('success', 'Le Trick a été modifié avec succès.');
             return $this->redirectToRoute('app_trick_index');
         }
@@ -103,7 +112,7 @@ class TrickController extends AbstractController
                 $filename = $illustration->getFileName();
                 if (!empty($filename))
                 {
-                    $uploadsDir = $this->getParameter('uploads_directory');
+                    $uploadsDir = $this->getParameter('images_uploads_directory');
                     unlink($uploadsDir . '/' . $filename);
                 }
             }
@@ -131,7 +140,7 @@ class TrickController extends AbstractController
         }
 
         $filename = $illustration->getFileName();
-        $uploadsDir = $this->getParameter('uploads_directory');
+        $uploadsDir = $this->getParameter('images_uploads_directory');
         unlink($uploadsDir . '/' . $filename);
 
         $entityManager->remove($illustration);

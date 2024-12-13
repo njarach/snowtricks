@@ -3,7 +3,7 @@
         <div class="card-header p-0">
             <a href="{{ path('app_trick_show', { slug: trick.slug }) }}">
                 {% if trick.illustrations|length > 0 and trick.illustrations[0].filename is not empty %}
-                    <img src="{{ asset('/uploads/' ~ trick.illustrations[0].filename) }}"
+                    <img src="{{ asset('/uploads/images/' ~ trick.illustrations[0].filename) }}"
                          class="card-img-top"
                          alt="{{ trick.name }}">
                 {% else %}

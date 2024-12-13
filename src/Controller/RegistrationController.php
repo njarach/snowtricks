@@ -9,6 +9,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
@@ -22,6 +23,9 @@ class RegistrationController extends AbstractController
     {
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
@@ -37,6 +41,21 @@ class RegistrationController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             $user->setRoles(['ROLE_UNVERIFIED_USER']);
+
+            $profilePictureFile = $form->get('uploadedProfilePicture')->getData();
+            if (!empty($profilePictureFile))
+            {
+                $newFilename = uniqid() . '.' . $profilePictureFile->guessExtension();
+                try {
+                    $profilePictureFile->move(
+                        $this->getParameter('profile_pictures_uploads_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('File upload failed: ' . $e->getMessage());
+                }
+                $user->setProfilePicture($newFilename);
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();

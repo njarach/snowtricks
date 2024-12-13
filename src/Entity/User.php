@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -52,6 +53,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $profile_picture = null;
+
+    private ?UploadedFile $uploadedProfilePicture = null;
+
 
     public function __construct()
     {
@@ -216,5 +223,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isVerified = $isVerified;
 
         return $this;
+    }
+
+    public function getProfilePicture(): ?string
+    {
+        return $this->profile_picture;
+    }
+
+    public function setProfilePicture(?string $profile_picture): static
+    {
+        $this->profile_picture = $profile_picture;
+
+        return $this;
+    }
+
+    /**
+     * @return UploadedFile|null
+     */
+    public function getUploadedProfilePicture(): ?UploadedFile
+    {
+        return $this->uploadedProfilePicture;
+    }
+
+    /**
+     * @param UploadedFile|null $uploadedProfilePicture
+     */
+    public function setUploadedProfilePicture(?UploadedFile $uploadedProfilePicture): void
+    {
+        $this->uploadedProfilePicture = $uploadedProfilePicture;
     }
 }

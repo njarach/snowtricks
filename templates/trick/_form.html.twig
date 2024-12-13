@@ -39,7 +39,7 @@
         {% endif %}
         {% for illustration in trick.illustrations %}
             <div class="col-2 position-relative">
-                <img src="{{ asset('/uploads/' ~ illustration.filename) }}" alt="" width="150" class="img-thumbnail">
+                <img src="{{ asset('/uploads/images/' ~ illustration.filename) }}" alt="" width="150" class="img-thumbnail">
                 <form action="{{ path('app_illustration_delete', {id: illustration.id}) }}" method="post" style="display:inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ illustration.id) }}">
                     <button type="submit" class="btn btn-danger trick-illustration-delete-icon" onclick="confirm('Souhaitez-vous vraiment supprimer cette illustration ?')"><i class="bi bi-trash-fill"></i></button>

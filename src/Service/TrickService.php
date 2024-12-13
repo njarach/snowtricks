@@ -2,25 +2,31 @@
 
 namespace App\Service;
 
+use App\Entity\Illustration;
 use App\Entity\Trick;
+use App\Entity\Video;
+use App\Service\Manager\MessageManager;
 use App\Service\Manager\TrickManager;
 use App\Service\Paginator\PaginatorService;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
 class TrickService
 {
     private TrickManager $trickManager;
+    private MessageManager $messageManager;
     private ParameterBagInterface $parameterBag;
     private SluggerInterface $slugger;
 
-    public function __construct(TrickManager $trickManager, ParameterBagInterface $parameterBag, SluggerInterface $slugger)
+    public function __construct(TrickManager $trickManager, MessageManager $messageManager, ParameterBagInterface $parameterBag, SluggerInterface $slugger)
     {
         $this->trickManager = $trickManager;
         $this->parameterBag = $parameterBag;
         $this->slugger = $slugger;
+        $this->messageManager = $messageManager;
     }
 
     public function getPaginatedTricks(int $page = 1, int $limit = 5): array
@@ -58,45 +64,10 @@ class TrickService
      * @return void
      * @throws Exception
      */
-    public function createTrick(Trick $trick,): void
+    public function cleanupAndPersistTrickData(Trick $trick): void
     {
-        $this->handleTrickFormData($trick);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function editTrick(Trick $trick): void
-    {
-        $this->handleTrickFormData($trick);
-    }
-
-    /**
-     * @param Trick $trick
-     * @return void
-     * @throws Exception
-     */
-    private function handleTrickFormData(Trick $trick): void
-    {
-        foreach ($trick->getIllustrations() as $illustration) {
-            $uploadedFile = $illustration->getUploadedFile();
-            if (!empty($uploadedFile)) {
-                $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
-                try {
-                    $uploadedFile->move(
-                        $this->parameterBag->get('uploads_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    throw new \Exception('File upload failed: ' . $e->getMessage());
-                }
-                $illustration->setFileName($newFilename);
-            }
-        }
-
         $this->removeEmptyLinkVideos($trick);
         $this->removeEmptyFilenameIllustrations($trick);
-
         $trick->generateSlug($this->slugger);
         $this->persistAndFlushTrick($trick);
     }
@@ -123,6 +94,50 @@ class TrickService
         foreach ($trick->getIllustrations() as $illustration) {
             if (empty($illustration->getFileName())) {
                 $trick->removeIllustration($illustration);
+            }
+        }
+    }
+
+    public function getPaginatedMessages(Trick $trick, int $page, int $limit = 10): array
+    {
+        $query = $this->messageManager->getMessagesFromTrick($trick);
+        $paginator = new PaginatorService();
+        return $paginator->paginate($query,$page, $limit);
+    }
+
+    public function bindVideoLinks(FormInterface $form, Trick $trick): void
+    {
+        $videos = $form->get('videos')->getData();
+
+        foreach ($videos as $videoData) {
+            $video = new Video();
+            $video->setEmbedLink($videoData->getEmbedLink());
+            $trick->addVideo($video);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function bindIllustrationFilename(FormInterface $form, Trick $trick): void
+    {
+        $illustrations = $form->get('illustrations')->getData();
+
+        foreach ($illustrations as $illustration) {
+            $newIllustration = new Illustration();
+            $uploadedFile = $illustration->getUploadedFile();
+            if (!empty($uploadedFile)) {
+                $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+                try {
+                    $uploadedFile->move(
+                        $this->parameterBag->get('images_uploads_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('File upload failed: ' . $e->getMessage());
+                }
+                $newIllustration->setFileName($newFilename);
+                $trick->addIllustration($newIllustration);
             }
         }
     }

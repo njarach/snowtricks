@@ -15,7 +15,7 @@ class PaginatorService
         $paginator = new Paginator($query);
         $totalItems = count($paginator);
 
-        $totalPages = ceil($totalItems / $limit);
+        $totalPages = max(1,ceil($totalItems / $limit));
 
         return [
             'items' => iterator_to_array($paginator),

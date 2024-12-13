@@ -2,12 +2,12 @@
 
 namespace App\Service;
 
+use App\Entity\Illustration;
 use App\Entity\Trick;
 use App\Entity\Video;
 use App\Service\Manager\MessageManager;
 use App\Service\Manager\TrickManager;
 use App\Service\Paginator\PaginatorService;
-use Doctrine\Common\Collections\Collection;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Form\FormInterface;
@@ -64,45 +64,10 @@ class TrickService
      * @return void
      * @throws Exception
      */
-    public function createTrick(Trick $trick): void
+    public function cleanupAndPersistTrickData(Trick $trick): void
     {
-        $this->handleTrickFormData($trick);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function editTrick(Trick $trick): void
-    {
-        $this->handleTrickFormData($trick);
-    }
-
-    /**
-     * @param Trick $trick
-     * @return void
-     * @throws Exception
-     */
-    private function handleTrickFormData(Trick $trick): void
-    {
-        foreach ($trick->getIllustrations() as $illustration) {
-            $uploadedFile = $illustration->getUploadedFile();
-            if (!empty($uploadedFile)) {
-                $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
-                try {
-                    $uploadedFile->move(
-                        $this->parameterBag->get('images_uploads_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    throw new \Exception('File upload failed: ' . $e->getMessage());
-                }
-                $illustration->setFileName($newFilename);
-            }
-        }
-
         $this->removeEmptyLinkVideos($trick);
         $this->removeEmptyFilenameIllustrations($trick);
-
         $trick->generateSlug($this->slugger);
         $this->persistAndFlushTrick($trick);
     }
@@ -144,15 +109,36 @@ class TrickService
     {
         $videos = $form->get('videos')->getData();
 
-        // Debug the data
-//        dd($videos);
-
-        // Process the data as needed
         foreach ($videos as $videoData) {
-            // Example: Add videos to the Trick entity manually
             $video = new Video();
             $video->setEmbedLink($videoData->getEmbedLink());
             $trick->addVideo($video);
+        }
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function bindIllustrationFilename(FormInterface $form, Trick $trick): void
+    {
+        $illustrations = $form->get('illustrations')->getData();
+
+        foreach ($illustrations as $illustration) {
+            $newIllustration = new Illustration();
+            $uploadedFile = $illustration->getUploadedFile();
+            if (!empty($uploadedFile)) {
+                $newFilename = uniqid() . '.' . $uploadedFile->guessExtension();
+                try {
+                    $uploadedFile->move(
+                        $this->parameterBag->get('images_uploads_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    throw new \Exception('File upload failed: ' . $e->getMessage());
+                }
+                $newIllustration->setFileName($newFilename);
+                $trick->addIllustration($newIllustration);
+            }
         }
     }
 }

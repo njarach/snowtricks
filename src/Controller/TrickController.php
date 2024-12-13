@@ -65,8 +65,9 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setAuthor($this->getUser());
-            $this->trickService->bindVideoLinks($form);
-            $this->trickService->createTrick($trick);
+            $this->trickService->bindVideoLinks($form, $trick);
+            $this->trickService->bindIllustrationFilename($form, $trick);
+            $this->trickService->cleanUpAndPersistTrickData($trick);
             $this->addFlash('success', 'Le Trick a été créé avec succès.');
             return $this->redirectToRoute('app_trick_index');
         }
@@ -88,7 +89,8 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->trickService->bindVideoLinks($form, $trick);
-            $this->trickService->editTrick($trick);
+            $this->trickService->bindIllustrationFilename($form, $trick);
+            $this->trickService->cleanupAndPersistTrickData($trick);
             $this->addFlash('success', 'Le Trick a été modifié avec succès.');
             return $this->redirectToRoute('app_trick_index');
         }

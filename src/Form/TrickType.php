@@ -36,6 +36,7 @@ class TrickType extends AbstractType
                 'entry_type' => IllustrationType::class,
                 'allow_add' => true,
                 'by_reference' => false,
+                'mapped'=>false
             ])
             ->add('videos', CollectionType::class, [
                 'entry_type' => VideoType::class,

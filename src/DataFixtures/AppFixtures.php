@@ -81,7 +81,7 @@ class AppFixtures extends Fixture
                 'name' => 'Indy',
                 'group' => $groups['Grabs'],
                 'description' => 'Saisie de la carre frontside de la planche, entre les deux pieds, avec la main arrière.',
-                'illustration' => 'indy_grab.jpg'
+                'illustration' => 'indie_grab.jpg'
             ],
             [
                 'name' => 'Stalefish',

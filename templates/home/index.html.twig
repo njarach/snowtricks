@@ -1,15 +1,15 @@
 {% extends 'base.html.twig' %}
-{% block body %}
 
-    <div class="cover-page">
-        <div class="px-3">
-            <h1>Cover your page.</h1>
-            <p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
+{% block body %}
+    <div id="cover-page" style="background-image: url('{{ asset('images/cover_image.jpg') }}');">
+        <div class="px-3" id="cover-welcome-message">
+            <p class="lead">Bienvenue sur Snowtricks. Découvre les figures de snowboard et rejoins une communauté de passionnés.</p>
             <p class="lead">
                 <a href="#tricks-list" class="btn btn-lg btn-light fw-bold border-white bg-white">Voir les derniers tricks</a>
             </p>
         </div>
     </div>
+
     <div class="posts-section container mt-5">
         {{ include('trick/_tricks_list.html.twig', { 'tricks': tricks }) }}
         <div class="d-flex justify-content-center">

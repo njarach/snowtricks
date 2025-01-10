@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\RegistrationFormType;
 use App\Security\EmailVerifier;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -36,25 +37,24 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var string $plainPassword */
             $plainPassword = $form->get('plainPassword')->getData();
-
-            // encode the plain password
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
-
             $user->setRoles(['ROLE_UNVERIFIED_USER']);
 
             $profilePictureFile = $form->get('uploadedProfilePicture')->getData();
-            if (!empty($profilePictureFile))
-            {
+            if ($profilePictureFile) {
                 $newFilename = uniqid() . '.' . $profilePictureFile->guessExtension();
                 try {
                     $profilePictureFile->move(
                         $this->getParameter('profile_pictures_uploads_directory'),
                         $newFilename
                     );
-                } catch (FileException $e) {
-                    throw new \Exception('File upload failed: ' . $e->getMessage());
+                } catch (Exception $exception) {
+                    $this->addFlash('error', 'Failed to upload profile picture: ');
+                    return $this->redirectToRoute('app_register');
                 }
                 $user->setProfilePicture($newFilename);
+            } else {
+                $user->setProfilePicture('profile_picture_placeholder_png');
             }
 
             $entityManager->persist($user);
@@ -68,9 +68,7 @@ class RegistrationController extends AbstractController
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
-
-            $this->addFlash('warning',"Veuillez valider votre adresse email pour pouvoir modifier les tricks et publier des commentaires.");
-            return $security->login($user, 'form_login', 'main');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('registration/register.html.twig', [

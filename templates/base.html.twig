@@ -16,12 +16,12 @@
 
 <body class="d-flex flex-column h-100">
 {% include 'partials/_navbar.html.twig' %}
-<main class="content-container flex-grow-1" style="padding-top: 56px">
-    {% if app.flashes|length > 0 %}
+<main class="content-container flex-grow-1" id="main-cover">
+    {% if app.session.flashbag.peekAll()|length > 0 %}
         <div class="container my-3" id="flash-messages-container">
             {% for label, messages in app.flashes %}
                 {% for message in messages %}
-                    <div role="alert" class="alert alert-{{ label }}">
+                    <div class="alert alert-{{ label }} flash-{{ label }}">
                         {{ message }}
                     </div>
                 {% endfor %}

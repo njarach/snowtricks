@@ -134,7 +134,7 @@ class TrickService
                         $newFilename
                     );
                 } catch (FileException $e) {
-                    throw new \Exception('File upload failed: ' . $e->getMessage());
+                    throw new Exception('File upload failed: ' . $e->getMessage());
                 }
                 $newIllustration->setFileName($newFilename);
                 $trick->addIllustration($newIllustration);

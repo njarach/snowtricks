@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Message;
 use App\Entity\Trick;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -17,7 +18,7 @@ class MessageRepository extends ServiceEntityRepository
         parent::__construct($registry, Message::class);
     }
 
-    public function findByTrick(Trick $trick): \Doctrine\ORM\Query
+    public function findByTrick(Trick $trick): Query
     {
         return $this->createQueryBuilder('m')->where('m.trick = :trick')->setParameter('trick',$trick)->getQuery();
     }

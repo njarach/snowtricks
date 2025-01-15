@@ -5,6 +5,7 @@ namespace App\Service;
 use App\Entity\Message;
 use App\Service\Manager\MessageManager;
 use App\Service\Manager\TrickManager;
+use DateTimeImmutable;
 
 class MessageService
 {
@@ -20,7 +21,7 @@ class MessageService
     public function createMessage(Message $message, string $messageContent): void
     {
         $message->setContent($messageContent);
-        $message->setCreatedAt(new \DateTimeImmutable());
+        $message->setCreatedAt(new DateTimeImmutable());
         $this->persistAndFlushMessage($message);
     }
 

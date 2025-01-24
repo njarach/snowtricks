@@ -24,6 +24,16 @@ class RegistrationFormType extends AbstractType
                     new NotBlank(['message' => 'Please enter a username']),
                 ],
             ])
+            ->add('firstname', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'Please enter your firstname']),
+                ],
+            ])
+            ->add('lastname', TextType::class, [
+                'constraints' => [
+                    new NotBlank(['message' => 'Please enter your lastname']),
+                ],
+            ])
             ->add('email', EmailType::class, [
                 'constraints' => [
                     new NotBlank([

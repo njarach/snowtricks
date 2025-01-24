@@ -29,6 +29,8 @@ class AppFixtures extends Fixture
         $user1->setEmail('user1@example.com');
         $user1->setPassword($this->passwordHasher->hashPassword($user1, 'password1'));
         $user1->setUsername('User1');
+        $user1->setFirstname('Jean');
+        $user1->setLastname('Dupont');
         $user1->setProfilePicture('uploads/profile_pictures/profile_picture_placeholder.png');
         $user1->setVerified(true);
         $user1->setRoles(['ROLE_VERIFIED_USER']);
@@ -37,12 +39,15 @@ class AppFixtures extends Fixture
         $user2->setEmail('user2@example.com');
         $user2->setPassword($this->passwordHasher->hashPassword($user2, 'password2'));
         $user2->setUsername('User2');
+        $user1->setFirstname('Jeanne');
+        $user1->setLastname('Doe');
         $user2->setProfilePicture('uploads/profile_pictures/profile_picture_placeholder.png');
         $user2->setVerified(true);
         $user2->setRoles(['ROLE_VERIFIED_USER']);
 
         $manager->persist($user1);
         $manager->persist($user2);
+        $manager->flush();
 
         $groupNames = [
             'Grabs',

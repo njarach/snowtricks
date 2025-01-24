@@ -39,8 +39,8 @@ class AppFixtures extends Fixture
         $user2->setEmail('user2@example.com');
         $user2->setPassword($this->passwordHasher->hashPassword($user2, 'password2'));
         $user2->setUsername('User2');
-        $user1->setFirstname('Jeanne');
-        $user1->setLastname('Doe');
+        $user2->setFirstname('Jeanne');
+        $user2->setLastname('Doe');
         $user2->setProfilePicture('uploads/profile_pictures/profile_picture_placeholder.png');
         $user2->setVerified(true);
         $user2->setRoles(['ROLE_VERIFIED_USER']);

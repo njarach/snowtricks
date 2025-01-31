@@ -23,21 +23,20 @@ Jimmy Sweat, entrepreneur et passionné de snowboard, souhaite créer un site co
 ## 🔧 Installation et utilisation
 1. **Cloner le projet**
    ```sh
-   git clone https://github.com/votre-repo/snowtricks.git
+   git clone https://github.com/njarach/snowtricks.git
    cd snowtricks
    ```
 2. **Installer les dépendances**
    ```sh
    composer install
-   npm install
    ```
 3. **Configurer l’environnement**
-    - Copier le fichier `.env.example` en `.env`
+    - Copier le fichier `.env` en `.env.local`
     - Modifier les variables de configuration (base de données, etc.)
 4. **Créer la base de données et charger les figures initiales**
    ```sh
    symfony console doctrine:database:create
-   symfony console doctrine:migrations:migrate
+   symfony console doctrine:schema:update --force
    symfony console doctrine:fixtures:load
    ```
 5. **Lancer le serveur Symfony**

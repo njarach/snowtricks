@@ -65,6 +65,7 @@ class TrickController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $trick->setAuthor($this->getUser());
+            $trick->setCreatedAt(new \DateTimeImmutable('now'));
             $this->trickService->bindVideoLinks($form, $trick);
             $this->trickService->bindIllustrationFilename($form, $trick);
             $this->trickService->cleanUpAndPersistTrickData($trick);
@@ -88,6 +89,7 @@ class TrickController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $trick->setUpdatedAt(new \DateTimeImmutable('now'));
             $this->trickService->bindVideoLinks($form, $trick);
             $this->trickService->bindIllustrationFilename($form, $trick);
             $this->trickService->cleanupAndPersistTrickData($trick);

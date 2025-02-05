@@ -74,67 +74,68 @@ class AppFixtures extends Fixture
                 'name' => 'Mute',
                 'group' => $groups['Grabs'],
                 'description' => 'Saisie de la carre frontside de la planche entre les deux pieds avec la main avant.',
-                'illustration' => 'mute_grab.jpg'
+                'illustration' => ['mute_grab.jpg','placeholder.jpg','placeholder.jpg']
             ],
             [
                 'name' => 'Sad',
                 'group' => $groups['Grabs'],
                 'description' => 'Saisie de la carre backside de la planche, entre les deux pieds, avec la main avant.',
-                'illustration' => 'sad_grab.jpg'
+                'illustration' => ['sad_grab.jpg','placeholder.jpg','placeholder.jpg']
             ],
             [
                 'name' => 'Indy',
                 'group' => $groups['Grabs'],
                 'description' => 'Saisie de la carre frontside de la planche, entre les deux pieds, avec la main arrière.',
-                'illustration' => 'indie_grab.jpg'
+                'illustration' => ['indie_grab.jpg','placeholder.jpg','placeholder.jpg']
             ],
             [
                 'name' => 'Stalefish',
                 'group' => $groups['Grabs'],
                 'description' => 'Saisie de la carre backside de la planche entre les deux pieds avec la main arrière.',
-                'illustration' => 'stalefish_grab.jpg'
+                'illustration' => ['stalefish_grab.jpg','placeholder.jpg','placeholder.jpg']
             ],
             [
                 'name' => 'Tail Grab',
                 'group' => $groups['Grabs'],
                 'description' => 'Saisie de la partie arrière de la planche, avec la main arrière.',
-                'illustration' => 'tail_grab.jpg'
+                'illustration' => ['tail_grab.jpg','placeholder.jpg','placeholder.jpg']
             ],
             [
                 'name' => 'Nose Grab',
                 'group' => $groups['Grabs'],
                 'description' => 'Saisie de la partie avant de la planche, avec la main avant.',
-                'illustration' => 'nose_grab.jpg'
+                'illustration' => ['nose_grab.jpg','placeholder.jpg','placeholder.jpg']
             ],
             [
                 'name' => 'Japan Air',
                 'group' => $groups['Grabs'],
                 'description' => 'Saisie de l’avant de la planche, avec la main avant, du côté de la carre frontside.',
-                'illustration' => 'japan_air.jpg'
+                'illustration' => ['japan_air.jpg','placeholder.jpg','placeholder.jpg']
             ],
             [
                 'name' => 'Backside Air',
                 'group' => $groups['Old school'],
                 'description' => 'Une figure old school classique.',
-                'illustration' => 'backside_air.jpg'
+                'illustration' => ['backside_air.jpg','placeholder.jpg','placeholder.jpg']
             ],
             [
                 'name' => 'Method Air',
                 'group' => $groups['Old school'],
                 'description' => 'Une autre figure old school indémodable.',
-                'illustration' => 'method_air.jpg'
+                'illustration' => ['method_air.jpg','placeholder.jpg','placeholder.jpg']
             ],
             [
                 'name' => 'Front Flip',
                 'group' => $groups['Flips'],
                 'description' => 'Une rotation verticale en avant.',
-                'illustration' => 'front_flip.jpg',
+                'illustration' => ['front_flip.jpg','placeholder.jpg','placeholder.jpg'],
                 'video' => 'https://www.youtube.com/embed/80pI61w_qtk?si=Yq5T4OUtDRYo6jSq'
             ]
         ];
 
         foreach ($tricksData as $index => $data) {
             $trick = new Trick();
+            $trick->setCreatedAt(new \DateTimeImmutable('now'));
             $trick->setName($data['name']);
             $trick->setTrickGroup($data['group']);
             $trick->setDescription($data['description']);
@@ -142,10 +143,13 @@ class AppFixtures extends Fixture
             $trick->generateSlug($this->slugger);
             $manager->persist($trick);
 
-            $illustration = new Illustration();
-            $illustration->setFilename($data['illustration']);
-            $illustration->setTrick($trick);
-            $manager->persist($illustration);
+            foreach ($data['illustration'] as $illustration) {
+                $newIllustration = new Illustration();
+                $newIllustration->setFilename($illustration);
+                $newIllustration->setTrick($trick);
+                $manager->persist($newIllustration);
+            }
+
 
             if (!empty($data['video'])) {
                 $video = new Video();

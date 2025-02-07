@@ -1,0 +1,34 @@
+<div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+    {% for image in trick.illustrations %}
+        <div class="thumbnail-container">
+            <img src="{{ asset('/uploads/images/' ~ image.filename) }}"
+                 class="img-thumbnail thumbnail"
+                 alt="{{ image.filename }}"
+                 data-bs-toggle="modal"
+                 data-bs-target="#imageModal"
+            >
+        </div>
+    {% endfor %}
+    {% for video in trick.videos %}
+        <div class="thumbnail-container">
+            <iframe src="{{ video.embedLink }}"
+                    allowfullscreen
+                    class="img-thumbnail"
+                    style="width: 150px; height: 150px; border: none;"></iframe>
+        </div>
+    {% endfor %}
+</div>
+
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">{{ trick.name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" class="img-fluid" alt="Trick Image">
+            </div>
+        </div>
+    </div>
+</div>

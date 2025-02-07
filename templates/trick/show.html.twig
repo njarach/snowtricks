@@ -5,17 +5,27 @@
 {% block body %}
     <div class="container mt-3">
         <div class="row">
-            <div class="text-center">
-                <h1>{{ trick.name }}</h1>
-            </div>
-
             {% if trick.illustrations|length > 0 %}
-                <div class="cover-image mb-4">
-                    <img src="{{ asset('/uploads/images/' ~ trick.illustrations[0].filename) }}" alt="Trick Cover Image" class="img-fluid w-100" style="max-height: 400px; object-fit: cover;">
+                <div class="cover-image position-relative mb-4"
+                     style="width: 100%; height: 60vh; min-height: 400px; max-height: 600px; overflow: hidden;">
+
+                    <img src="{{ asset('/uploads/images/' ~ trick.illustrations[0].filename) }}"
+                         alt="Trick Cover Image"
+                         class="img-fluid w-100 h-100"
+                         style="object-fit: cover; object-position: top center;">
+
+                    <div class="position-absolute top-50 start-50 translate-middle text-white text-center"
+                         style="background: rgba(0, 0, 0, 0.5); padding: 10px 20px; border-radius: 8px; width: 90%;">
+                        <h1 class="fw-bold">{{ trick.name }}</h1>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center">
+                    <h1>{{ trick.name }}</h1>
                 </div>
             {% endif %}
 
-            {% include 'trick/_media_carousel.html.twig' %}
+            {% include 'trick/_trick_medias.html.twig' %}
 
             <div class="my-4">
                 <p>{{ trick.description }}</p>

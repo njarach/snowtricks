@@ -25,3 +25,16 @@ function addFormToCollection(e) {
 
     collectionHolder.dataset.index++;
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+    // Select all thumbnails
+    const thumbnails = document.querySelectorAll(".thumbnail");
+
+    // Add click event listener to each thumbnail
+    thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener("click", function () {
+            const imageSrc = this.getAttribute("src");
+            document.getElementById("modalImage").src = imageSrc;
+        });
+    });
+});

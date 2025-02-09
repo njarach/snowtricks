@@ -31,7 +31,6 @@ class AppFixtures extends Fixture
         $user1->setUsername('User1');
         $user1->setFirstname('Jean');
         $user1->setLastname('Dupont');
-        $user1->setProfilePicture('uploads/profile_pictures/profile_picture_placeholder.png');
         $user1->setVerified(true);
         $user1->setRoles(['ROLE_VERIFIED_USER']);
 
@@ -41,7 +40,6 @@ class AppFixtures extends Fixture
         $user2->setUsername('User2');
         $user2->setFirstname('Jeanne');
         $user2->setLastname('Doe');
-        $user2->setProfilePicture('uploads/profile_pictures/profile_picture_placeholder.png');
         $user2->setVerified(true);
         $user2->setRoles(['ROLE_VERIFIED_USER']);
 

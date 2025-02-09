@@ -9,7 +9,7 @@
                     <div class="row g-0">
                         <div class="col-3 col-md-2 d-flex justify-content-center align-items-center">
                             {% if message.author.profilePicture is empty %}
-                                {% set profile_picture = asset('uploads/profile_pictures/profile_picture_placeholder.png') %}
+                                {% set profile_picture = asset('images/profile_picture_placeholder.png') %}
                             {% else %}
                                 {% set profile_picture = asset('uploads/profile_pictures/' ~ message.author.profilePicture) %}
                             {% endif %}

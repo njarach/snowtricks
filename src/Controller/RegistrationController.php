@@ -28,7 +28,7 @@ class RegistrationController extends AbstractController
      * @throws Exception
      */
     #[Route('/register', name: 'app_register')]
-    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
+    public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
@@ -68,6 +68,7 @@ class RegistrationController extends AbstractController
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('registration/confirmation_email.html.twig')
             );
+            $this->addFlash('warning','Veuillez vérifier votre adresse e-mail pour pouvoir publier des Tricks et des commentaires !');
             return $this->redirectToRoute('app_login');
         }
 

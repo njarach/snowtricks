@@ -1,7 +1,7 @@
 <div>
     {{ form_start(form) }}
     {{ form_errors(form) }}
-{#    We add this manually because apparently, as opposed to the documentation, it didn't render automatically ??!! #}
+    {#    We add this manually because apparently, as opposed to the documentation, it didn't render automatically ??!! #}
     {{ form_row(form._token) }}
     {{ form_row(form.name) }}
     {{ form_row(form.description) }}

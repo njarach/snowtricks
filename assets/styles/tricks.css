@@ -57,3 +57,8 @@
 .trick-illustration-delete-icon:hover {
     background-color: red;
 }
+
+.card-img-top {
+    height: 200px; /* Set a fixed height */
+    object-fit: cover; /* Ensures the image fills the space without distortion */
+}

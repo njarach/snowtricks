@@ -9,9 +9,11 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TrickRepository::class)]
-#[UniqueEntity(fields: ['name'], message: 'Un truc avec nom existe déjà.')]
+#[UniqueEntity(fields: ['name'], message: 'Un trick avec ce nom existe déjà.')]
+#[UniqueEntity(fields: ['slug'], message: 'Ce slug est déjà utilisé.')]
 class Trick
 {
     private ?string $originalName = null;
@@ -22,16 +24,29 @@ class Trick
     private ?int $id = null;
 
     #[ORM\Column(length: 100, unique: true)]
+    #[Assert\NotBlank(message: 'Le nom ne peut pas être vide.')]
+    #[Assert\Length(
+        max: 100,
+        maxMessage: 'Le nom ne peut pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $name = null;
 
     #[ORM\ManyToOne(inversedBy: 'tricks')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message: 'Le groupe de tricks est obligatoire.')]
     private ?Group $trick_group = null;
 
     #[ORM\ManyToOne(inversedBy: 'tricks')]
     private ?User $author = null;
 
     #[ORM\Column(type: Types::TEXT)]
+    #[Assert\NotBlank(message: 'La description ne peut pas être vide.')]
+    #[Assert\Length(
+        min: 10,
+        max: 5000,
+        minMessage: 'La description doit contenir au moins {{ limit }} caractères.',
+        maxMessage: 'La description ne peut pas dépasser {{ limit }} caractères.'
+    )]
     private ?string $description = null;
 
     /**
@@ -47,6 +62,14 @@ class Trick
     private Collection $videos;
 
     #[ORM\Column(length: 200, unique: true)]
+    #[Assert\Length(
+        max: 200,
+        maxMessage: 'Le slug ne peut pas dépasser {{ limit }} caractères.'
+    )]
+    #[Assert\Regex(
+        pattern: '/^[a-z0-9-]+$/',
+        message: 'Le slug ne peut contenir que des lettres minuscules, des chiffres et des tirets.'
+    )]
     private ?string $slug = null;
 
     /**

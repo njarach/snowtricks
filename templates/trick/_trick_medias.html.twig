@@ -1,22 +1,32 @@
-<div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
-    {% for image in trick.illustrations %}
-        <div class="thumbnail-container">
-            <img src="{{ asset('/uploads/images/' ~ image.filename) }}"
-                 class="img-thumbnail thumbnail"
-                 alt="{{ image.filename }}"
-                 data-bs-toggle="modal"
-                 data-bs-target="#imageModal"
-            >
+<div class="text-center">
+    <button class="btn btn-secondary d-md-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#mediaAccordion">
+        Voir Médias
+    </button>
+</div>
+
+<div class="collapse d-md-block" id="mediaAccordion">
+    <div class="card card-body">
+        <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+            {% for image in trick.illustrations %}
+                <div class="thumbnail-container">
+                    <img src="{{ asset('/uploads/images/' ~ image.filename) }}"
+                         class="img-thumbnail thumbnail"
+                         alt="{{ image.filename }}"
+                         data-bs-toggle="modal"
+                         data-bs-target="#imageModal"
+                    >
+                </div>
+            {% endfor %}
+            {% for video in trick.videos %}
+                <div class="thumbnail-container">
+                    <iframe src="{{ video.embedLink }}"
+                            allowfullscreen
+                            class="img-thumbnail"
+                            style="width: 150px; height: 150px; border: none;"></iframe>
+                </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-    {% for video in trick.videos %}
-        <div class="thumbnail-container">
-            <iframe src="{{ video.embedLink }}"
-                    allowfullscreen
-                    class="img-thumbnail"
-                    style="width: 150px; height: 150px; border: none;"></iframe>
-        </div>
-    {% endfor %}
+    </div>
 </div>
 
 <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">

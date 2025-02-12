@@ -52,7 +52,7 @@ class Trick
     /**
      * @var Collection<int, Message>
      */
-    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'trick')]
+    #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'trick', orphanRemoval: true)]
     private Collection $messages;
 
     #[ORM\Column]
